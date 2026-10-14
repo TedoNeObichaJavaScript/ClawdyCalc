@@ -344,3 +344,50 @@ kbd { font: 600 10px/1 var(--sans); background: var(--track); border: 1px solid 
 .warn { position: relative; padding-right: 30px; }
 .dismiss { position: absolute; top: 6px; right: 8px; width: 22px; height: 22px; border: 0; border-radius: 6px; background: none; color: var(--muted); font-size: 16px; line-height: 1; cursor: pointer; }
 .dismiss:hover { background: var(--track); color: var(--ink); }
+
+/* ---------- big counter: per-theme count-up effects (js/counter.js) ---------- */
+.big { position: relative; }
+.cc-run { display: inline-block; white-space: nowrap; }
+.cc-c { display: inline-block; }
+.cc-clip .cc-c { height: 1.12em; line-height: 1.12em; overflow: hidden; vertical-align: bottom; }
+.cc-strip { display: flex; flex-direction: column; will-change: transform; }
+.cc-strip > span { height: 1.12em; line-height: 1.12em; text-align: center; }
+
+/* gruvbox split-flap tiles */
+.cc-flap { position: relative; margin: 0 .03em; padding: 0 .06em; border-radius: .08em; background: color-mix(in srgb, var(--ink) 9%, transparent); box-shadow: inset 0 -.05em 0 color-mix(in srgb, var(--ink) 16%, transparent); }
+.cc-flap::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: max(1px, .025em); background: var(--bg); opacity: .85; }
+
+/* terminal cursor, tokyo neon glow */
+.big[data-fx="terminal"] .cc-run::after { content: '_'; color: var(--clay); animation: cc-blink 1s steps(1) infinite; }
+@keyframes cc-blink { 50% { opacity: 0; } }
+.big[data-fx="tokyo"] .cc-run { text-shadow: 0 0 10px color-mix(in srgb, var(--clay) 65%, transparent), 0 0 28px color-mix(in srgb, var(--clay) 35%, transparent); }
+
+/* shimmer sweeps (nord frost, synthwave sunset) */
+.cc-frost, .cc-sunset { background-size: 260% 100%; -webkit-background-clip: text; background-clip: text; animation: cc-sweep .9s ease-out both; }
+.cc-frost .cc-c, .cc-sunset .cc-c { color: transparent; }
+.cc-frost { background-image: linear-gradient(100deg, var(--ink) 38%, #eceff4 48%, #88c0d0 54%, var(--ink) 64%); }
+.cc-sunset { background-image: linear-gradient(100deg, var(--ink) 34%, #ff2a6d 44%, #ffb86c 54%, var(--ink) 64%); }
+@keyframes cc-sweep { from { background-position: 100% 0; } to { background-position: 0 0; } }
+
+/* particles */
+.cc-p { position: absolute; pointer-events: none; z-index: 2; }
+.cc-dot { width: 7px; height: 7px; margin: -3.5px; border-radius: 50%; animation: cc-fly .85s cubic-bezier(.2, .7, .3, 1) both; }
+.cc-px { width: 6px; height: 6px; margin: -3px; box-shadow: 0 0 0 1px rgba(0, 0, 0, .08); animation: cc-fly 1s steps(10) both; }
+@keyframes cc-fly {
+  0% { transform: translate(0, 0); opacity: 1; }
+  55% { transform: translate(calc(var(--dx) * .8), var(--dy)); opacity: 1; }
+  100% { transform: translate(var(--dx), calc(var(--dy) + 44px)) rotate(180deg); opacity: 0; }
+}
+.cc-drip { width: 5px; height: 0; margin-left: -2.5px; border-radius: 0 0 3px 3px; background: #ff5555; animation: cc-drip 1.6s ease-in both; }
+.cc-drip::after { content: ''; position: absolute; left: -1px; bottom: -4px; width: 7px; height: 7px; border-radius: 50%; background: inherit; }
+@keyframes cc-drip {
+  0% { height: 0; opacity: 1; }
+  45% { height: 16px; transform: none; opacity: 1; }
+  100% { height: 9px; transform: translateY(48px); opacity: 0; }
+}
+.cc-slash { height: 4px; margin-top: -2px; background: #fff; box-shadow: 0 0 0 2px #e57fa3; rotate: -7deg; transform-origin: left; animation: cc-slash .5s steps(6) both; }
+@keyframes cc-slash {
+  0% { transform: scaleX(0); opacity: 1; }
+  60% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1) translateX(12px); opacity: 0; }
+}

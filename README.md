@@ -63,6 +63,22 @@ The more you spend on a model, the bigger its Clawd gets. Chonk reflects spend.
 
 Click the palette in the top right, or just press <kbd>T</kbd> to flip through them. The code-editor themes switch everything to JetBrains Mono, because of course they do.
 
+Every theme also counts your money up in its own way, because watching a number go up should be fun even when it's your bill:
+
+| Theme | How the big number counts up |
+|---|---|
+| Claude | a mechanical odometer, carries roll over like an old car |
+| Terminal | digits scramble and decrypt left to right, blinking cursor included |
+| Dracula | digits drop in blood-pink, then the number drips |
+| Tokyo Night | a flickering neon sign that buzzes on |
+| Catppuccin | springy pastel pops and a little confetti |
+| Gruvbox | a retro split-flap board, one flip at a time |
+| Nord | motion blur that thaws as it slows down, then a frosty shimmer |
+| Synthwave | RGB-split glitching, then a sunset sweep |
+| Sakura | chunky pixel steps, a katana slash and a burst of petals |
+
+Switching themes replays the count so you can see each one. If your system asks for reduced motion, it skips straight to the answer.
+
 <table>
   <tr>
     <td align="center"><img src="docs/themes/claude.png" alt="Claude theme"><br><sub><b>Claude</b> · follows your system</sub></td>
@@ -213,7 +229,7 @@ ClawdyCalc/
 │   ├── css/                 style.css + themes.css
 │   ├── img/                 theme backdrops (Mt. Fuji lives here)
 │   └── js/                  app.js, stage.js (the playground), sprites.js (the Clawds),
-│                            themes.js (theme picker, petals, samurai mode)
+│                            themes.js (theme picker, petals, samurai mode), counter.js (the count-ups)
 ├── scripts/                 build-readme-art.js, build-theme-art.js, build-icons.js (all the pixel art),
 │                            launch-app.js (npm run app)
 └── docs/                    README images and theme previews

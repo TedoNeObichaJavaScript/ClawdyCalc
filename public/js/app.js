@@ -1,7 +1,7 @@
 (function () {
   const $ = (id) => document.getElementById(id);
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const POLL_MS = 20000;
+  const POLL_MS = 2000;
   const HIDDEN_POLL_MS = 5 * 60 * 1000;
   const DEMO = new URLSearchParams(location.search).has('demo');
   const LOCALE = 'en-US'; // the UI copy is English, so keep dates English too
@@ -24,6 +24,8 @@
   let theme = Themes.get(store.get('cc.theme', 'claude'));
   let lastFetch = 0;
   let prevModelCost = null;
+  let lastBody = '';
+  const bigCounter = createCounter($('big'));
 
   // ---------- formatting ----------
   const money = (n) => {
@@ -95,9 +97,7 @@
 
     const withEst = range === 'all' && estimateOn();
     const shown = t.cost + (withEst ? data.estimate.total : 0);
-    const [d, c] = shown.toFixed(2).split('.');
-    $('big').innerHTML = (withEst ? '<span class="approx">≈</span>' : '')
-      + (shown >= 1000 ? '$' + Number(d).toLocaleString('en-US') : `$${d}<span class="cents">.${c}</span>`);
+    bigCounter.set(shown, { approx: withEst });
     $('sub').textContent = !t.n && !t.cost
       ? `No Claude Code activity ${RANGE_LABEL[range]}`
       : `${tokens(t.tokens)} tokens · ${plural(t.n, 'message')} · ${RANGE_LABEL[range]}`
@@ -458,9 +458,14 @@
     try {
       const res = await fetch('/api/usage' + (DEMO ? '?demo=1' : ''), { cache: 'no-store' });
       if (!res.ok) throw new Error(res.status);
-      data = await res.json();
+      const body = await res.text();
       lastFetch = Date.now();
       $('live').className = 'live on';
+      // nothing new since the last poll: leave the page alone so hovers and animations aren't reset
+      const same = body.replace(/"generatedAt":\d+,?/, '');
+      if (same === lastBody) { renderFoot(); return; }
+      lastBody = same;
+      data = JSON.parse(body);
       renderAccount();
       render();
       syncMascots();
@@ -505,6 +510,7 @@
       if (window.ClawdyDesktop) window.ClawdyDesktop.background(getComputedStyle(document.documentElement).getPropertyValue('--bg').trim());
       if (data) render();
     });
+    bigCounter.replay(); // show off the new theme's count-up
     store.set('cc.theme', theme.id);
     const pop = $('themePop');
     if (!pop.hidden) Themes.buildPicker(pop, theme.id, setTheme);
