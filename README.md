@@ -117,6 +117,10 @@ You need [Node.js](https://nodejs.org) 18 or newer. There are two ways to run it
 
 A real Windows app with its own window, taskbar icon and tray icon.
 
+**Easiest:** grab `ClawdyCalc-Setup-x.y.z.exe` from the [latest release](https://github.com/TedoNeObichaJavaScript/ClawdyCalc/releases/latest) and run it. There's also a portable `.exe` if you don't want to install anything. No Node.js needed for either.
+
+Or build it yourself:
+
 ```bash
 git clone https://github.com/TedoNeObichaJavaScript/ClawdyCalc.git
 cd ClawdyCalc
