@@ -290,6 +290,8 @@
     const slot = plotW / buckets.length;
     const bw = Math.max(2, Math.min(slot - 2, 28));
     const y = (v) => padT + plotH - (v / top) * plotH;
+    const r = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar-radius'));
+    const radius = Number.isNaN(r) ? 4 : r;
 
     let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}">`;
     for (let g = step; g <= top + 1e-9; g += step) {
@@ -301,11 +303,11 @@
       const x = padL + i * slot + (slot - bw) / 2;
       const h = Math.max(0, y(0) - y(b.cost));
       svg += `<rect class="hit" data-i="${i}" x="${padL + i * slot}" y="${padT}" width="${slot}" height="${plotH}"/>`;
-      svg += `<path class="bar${b.inRange ? '' : ' dim'}" data-i="${i}" d="${barPath(x, y(0), bw, h, Math.min(4, bw / 2))}"/>`;
+      svg += `<path class="bar${b.inRange ? '' : ' dim'}" data-i="${i}" d="${barPath(x, y(0), bw, h, Math.min(radius, bw / 2))}"/>`;
       if (b.est > 0) {
         const eh = y(b.cost) - y(b.cost + b.est);
         // 2px gap between tracked and estimated
-        if (eh > 3) svg += `<rect class="est" x="${x + 0.75}" y="${y(b.cost + b.est) + 0.75}" width="${bw - 1.5}" height="${eh - 2 - 1.5}" rx="3"/>`;
+        if (eh > 3) svg += `<rect class="est" x="${x + 0.75}" y="${y(b.cost + b.est) + 0.75}" width="${bw - 1.5}" height="${eh - 2 - 1.5}" rx="${Math.min(3, radius)}"/>`;
       }
     });
     const labelIdx = buckets.length <= 12 ? buckets.map((_, i) => i) : [0, Math.floor(buckets.length / 2), buckets.length - 1];

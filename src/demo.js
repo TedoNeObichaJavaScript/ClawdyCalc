@@ -2,6 +2,7 @@
 const { buildReport } = require('./report');
 const { dayKey } = require('./util');
 
+// mulberry32 by Tommy Ettinger (public domain): https://gist.github.com/tommyettinger/46a874533244883189143505d203312c
 function rng(seed) {
   return () => {
     seed |= 0; seed = (seed + 0x6D2B79F5) | 0;

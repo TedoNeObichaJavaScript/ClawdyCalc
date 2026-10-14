@@ -6,7 +6,7 @@
   --sans: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
 }
 
-/* ---------- Terminal: green phosphor CRT ---------- */
+/* ---------- Terminal: green phosphor CRT (original palette) ---------- */
 :root[data-theme="terminal"] {
   --bg: #050a06; --card: #0b140d; --ink: #c8ffcc; --ink-2: #8fdc95; --muted: #5c9a63; --line: #173b1d;
   --clay: #3dff6e; --clay-deep: #9dffb3; --clay-soft: #12391b; --track: #0f2414;
@@ -22,7 +22,7 @@
 :root[data-theme="terminal"] .mascot svg,
 :root[data-theme="terminal"] .mini svg { filter: grayscale(1) sepia(1) hue-rotate(70deg) saturate(3.5) brightness(1.05) drop-shadow(0 0 3px rgba(61, 255, 110, .5)); }
 
-/* ---------- Dracula ---------- */
+/* ---------- Dracula — palette from draculatheme.com (MIT) ---------- */
 :root[data-theme="dracula"] {
   --bg: #21222c; --card: #282a36; --ink: #f8f8f2; --ink-2: #d6d6e0; --muted: #8b93c4; --line: #3a3c4e;
   --clay: #bd93f9; --clay-deep: #ff79c6; --clay-soft: #44385e; --track: #343746;
@@ -31,7 +31,7 @@
   color-scheme: dark;
 }
 
-/* ---------- Tokyo Night ---------- */
+/* ---------- Tokyo Night — palette from github.com/tokyo-night/tokyo-night-vscode-theme (MIT) ---------- */
 :root[data-theme="tokyo"] {
   --bg: #16161e; --card: #1a1b26; --ink: #c0caf5; --ink-2: #a9b1d6; --muted: #7a82ab; --line: #292e42;
   --clay: #7aa2f7; --clay-deep: #bb9af7; --clay-soft: #2a3454; --track: #232433;
@@ -40,7 +40,7 @@
   color-scheme: dark;
 }
 
-/* ---------- Catppuccin Mocha ---------- */
+/* ---------- Catppuccin Mocha — palette from catppuccin.com (MIT) ---------- */
 :root[data-theme="catppuccin"] {
   --bg: #11111b; --card: #1e1e2e; --ink: #cdd6f4; --ink-2: #bac2de; --muted: #8b8fa8; --line: #313244;
   --clay: #cba6f7; --clay-deep: #f5c2e7; --clay-soft: #3b3452; --track: #2a2b3c;
@@ -49,7 +49,7 @@
   color-scheme: dark;
 }
 
-/* ---------- Gruvbox ---------- */
+/* ---------- Gruvbox — palette from github.com/morhetz/gruvbox (MIT) ---------- */
 :root[data-theme="gruvbox"] {
   --bg: #1d2021; --card: #282828; --ink: #ebdbb2; --ink-2: #d5c4a1; --muted: #a89984; --line: #3c3836;
   --clay: #fe8019; --clay-deep: #fabd2f; --clay-soft: #4a3420; --track: #32302f;
@@ -58,7 +58,7 @@
   color-scheme: dark;
 }
 
-/* ---------- Nord ---------- */
+/* ---------- Nord — palette from nordtheme.com (MIT) ---------- */
 :root[data-theme="nord"] {
   --bg: #2e3440; --card: #3b4252; --ink: #eceff4; --ink-2: #d8dee9; --muted: #a3acbf; --line: #4c566a;
   --clay: #88c0d0; --clay-deep: #8fbcbb; --clay-soft: #3d5361; --track: #434c5e;
@@ -67,7 +67,7 @@
   color-scheme: dark;
 }
 
-/* ---------- Synthwave '84: neon sunset over a grid ---------- */
+/* ---------- Synthwave '84 — palette from github.com/robb0wen/synthwave-vscode (MIT) ---------- */
 :root[data-theme="synthwave"] {
   --bg: #1a1326; --card: #241b2f; --ink: #fdfdfd; --ink-2: #e0d7f0; --muted: #a197cc; --line: #3b2d52;
   --clay: #ff7edb; --clay-deep: #72f1b8; --clay-soft: #4a2550; --track: #2e2340;
@@ -92,7 +92,7 @@
   box-shadow: 0 -1px 12px rgba(255, 126, 219, .6);
 }
 
-/* ---------- Sakura: petals, Mt. Fuji, samurai Clawds ---------- */
+/* ---------- Sakura: petals, Mt. Fuji, samurai Clawds (original palette and art) ---------- */
 :root[data-theme="sakura"] {
   --bg: #fdf2f4; --card: #fffafb; --ink: #3d2b33; --ink-2: #6b4f5a; --muted: #9a7d88; --line: #f3d9e1;
   --clay: #e0709a; --clay-deep: #c24f7a; --clay-soft: #fbdbe6; --track: #f8e4ea;
@@ -100,27 +100,47 @@
   --shadow: rgba(120, 40, 70, .16);
   color-scheme: light;
 }
-:root[data-theme="sakura"] .deco { background: url("../img/sakura.svg") center bottom / cover no-repeat; opacity: .95; }
+:root[data-theme="sakura"] .deco { background: url("../img/sakura.svg") center bottom / cover no-repeat; image-rendering: pixelated; }
 :root[data-theme="sakura"] .ground {
-  background: repeating-linear-gradient(90deg, transparent 0 22px, rgba(110, 70, 40, .08) 22px 24px), var(--ground);
+  background: repeating-linear-gradient(90deg, transparent 0 20px, rgba(110, 70, 40, .1) 20px 24px), var(--ground);
 }
 
+/* Sakura goes full pixel art: pixel font for numbers and headings, notched pixel borders,
+   square everything, segmented bars. */
+:root[data-theme="sakura"] {
+  --serif: "Silkscreen", ui-monospace, monospace;
+  --bar-radius: 0;
+  --px-border: 0 -3px 0 0 var(--line), 0 3px 0 0 var(--line), -3px 0 0 0 var(--line), 3px 0 0 0 var(--line);
+}
+:root[data-theme="sakura"] :is(.card, .stage) { border: 0; border-radius: 0; box-shadow: var(--px-border), 0 7px 0 0 var(--clay-soft); margin: 3px 3px 7px; }
+:root[data-theme="sakura"] :is(.ranges, .ranges button, .who, .icon-btn, #planSelect, .theme-pop, .theme-pop button, .btn, .tooltip, .tag, kbd, .pill, .demo-badge, .meter, .meter-fill, .share, .share > i, .seg, .sw, .switch input, .switch input::after) { border-radius: 0; }
+:root[data-theme="sakura"] .ranges button[aria-selected="true"] { box-shadow: 0 -2px 0 0 var(--clay), 0 2px 0 0 var(--clay), -2px 0 0 0 var(--clay), 2px 0 0 0 var(--clay); }
+:root[data-theme="sakura"] :is(.meter-fill, .share > i) { background: repeating-linear-gradient(90deg, var(--clay) 0 6px, transparent 6px 8px); }
+:root[data-theme="sakura"] .shadow { border-radius: 0; height: 4px; }
+:root[data-theme="sakura"] :is(h2, .big, .multiple, .cost, .v, .brand) { font-weight: 400; letter-spacing: 0; }
+:root[data-theme="sakura"] h2 { font-size: 13px; }
+:root[data-theme="sakura"] .big { font-size: 40px; }
+:root[data-theme="sakura"] .multiple { font-size: 24px; }
+:root[data-theme="sakura"] .cost { font-size: 13px; }
+:root[data-theme="sakura"] .v { font-size: 16px; }
+:root[data-theme="sakura"] .brand { font-size: 15px; }
+:root[data-theme="sakura"] .swoosh { border: 0; border-radius: 0; filter: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Crect x='3' y='0' width='3' height='1' fill='%23ffffff'/%3E%3Crect x='6' y='0' width='1' height='1' fill='%23f9cada'/%3E%3Crect x='5' y='1' width='2' height='1' fill='%23ffffff'/%3E%3Crect x='6' y='2' width='1' height='1' fill='%23ffffff'/%3E%3Crect x='7' y='3' width='1' height='1' fill='%23ffffff'/%3E%3Crect x='7' y='4' width='1' height='1' fill='%23ffffff'/%3E%3Crect x='6' y='5' width='1' height='1' fill='%23ffffff'/%3E%3Crect x='5' y='6' width='1' height='1' fill='%23f9cada'/%3E%3C/svg%3E") center / contain no-repeat; image-rendering: pixelated; animation-timing-function: steps(4); }
+
+/* pixel petals: tiny sprites that fall at a choppy retro frame rate and flip in 90° steps */
 .petals { position: fixed; inset: 0; pointer-events: none; z-index: 30; overflow: hidden; }
 .petals i {
-  position: absolute; top: -20px; width: var(--s); height: calc(var(--s) * .72);
-  animation: petal-fall var(--d) linear var(--delay) infinite;
+  position: absolute; top: -20px; width: var(--s); height: calc(var(--s) * .8);
+  animation: petal-fall var(--d) steps(90) var(--delay) infinite;
 }
 .petals i::before {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(135deg, #ffd6e4, #f49ab8);
-  border-radius: 100% 0 100% 0;
-  animation: petal-sway calc(var(--d) / 3) ease-in-out var(--delay) infinite alternate;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5 4' shape-rendering='crispEdges'%3E%3Crect x='1' y='0' width='1' height='1' fill='%23ffe3ec'/%3E%3Crect x='2' y='0' width='1' height='1' fill='%23f4a7c0'/%3E%3Crect x='0' y='1' width='1' height='1' fill='%23ffe3ec'/%3E%3Crect x='1' y='1' width='3' height='1' fill='%23f4a7c0'/%3E%3Crect x='1' y='2' width='3' height='1' fill='%23f4a7c0'/%3E%3Crect x='4' y='2' width='1' height='1' fill='%23e07a9e'/%3E%3Crect x='2' y='3' width='1' height='1' fill='%23f4a7c0'/%3E%3Crect x='3' y='3' width='1' height='1' fill='%23e07a9e'/%3E%3C/svg%3E") center / contain no-repeat;
+  image-rendering: pixelated;
+  animation: petal-sway calc(var(--d) / 3) steps(8) var(--delay) infinite alternate, petal-flip calc(var(--d) / 2) steps(1) var(--delay) infinite;
 }
 @keyframes petal-fall { to { transform: translateY(calc(100vh + 40px)); } }
-@keyframes petal-sway {
-  from { transform: translateX(calc(var(--sway) * -1)) rotate(calc(var(--spin) * -40deg)) rotateX(0deg); }
-  to { transform: translateX(var(--sway)) rotate(calc(var(--spin) * 220deg)) rotateX(60deg); }
-}
+@keyframes petal-sway { from { translate: calc(var(--sway) * -1) 0; } to { translate: var(--sway) 0; } }
+@keyframes petal-flip { 0% { rotate: 0deg; } 25% { rotate: 90deg; } 50% { rotate: 180deg; } 75% { rotate: 270deg; } }
 
 /* katana swing + the slash streak */
 .mascot .katana { transform-box: fill-box; transform-origin: 50% 82%; }
@@ -137,7 +157,6 @@
 /* ---------- the "code" look for monospace themes ---------- */
 :root[data-mono] h2::before { content: "// "; color: var(--muted); font-weight: 400; }
 :root[data-mono] .brand-name::after { content: "_"; color: var(--clay); animation: cursor 1.1s steps(1) infinite; margin-left: 1px; }
-@keyframes cursor { 50% { opacity: 0; } }
 :root[data-mono] .big { font-size: 46px; letter-spacing: -0.04em; }
 :root[data-mono] .card, :root[data-mono] .stage { border-radius: 8px; }
 :root[data-mono] .ranges, :root[data-mono] .ranges button, :root[data-mono] .who { border-radius: 6px; }

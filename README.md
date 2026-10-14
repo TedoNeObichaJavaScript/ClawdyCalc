@@ -66,7 +66,7 @@ Click the palette in the top right, or just press <kbd>T</kbd> to flip through t
   <tr>
     <td align="center"><img src="docs/themes/claude.png" alt="Claude theme"><br><sub><b>Claude</b> · follows your system</sub></td>
     <td align="center"><img src="docs/themes/terminal.png" alt="Terminal theme"><br><sub><b>Terminal</b> · green phosphor CRT</sub></td>
-    <td align="center"><img src="docs/themes/sakura.png" alt="Sakura theme"><br><sub><b>Sakura</b> · petals and samurai</sub></td>
+    <td align="center"><img src="docs/themes/sakura.png" alt="Sakura theme"><br><sub><b>Sakura</b> · pixel art, petals and samurai</sub></td>
   </tr>
   <tr>
     <td align="center"><img src="docs/themes/synthwave.png" alt="Synthwave theme"><br><sub><b>Synthwave</b> · '84 neon sunset</sub></td>
@@ -194,6 +194,52 @@ PRs are very welcome. Some ideas if you're looking for one:
 When a new model comes out, add it to `src/pricing.js` and give it a hat. If you change the sprites, run `npm run art` to regenerate the README art.
 
 One rule: **no dependencies.** Keeping it zero-install is half the charm.
+
+## Credits
+
+ClawdyCalc stands on a lot of other people's work. Here's everything it uses, and where each piece came from.
+
+### Where the information comes from
+
+| What | Source |
+|---|---|
+| Per-model API prices and cache-read rates | [Claude API pricing](https://platform.claude.com/docs/en/about-claude/pricing), Anthropic |
+| Cache write cost (1.25× for 5 minutes, 2× for 1 hour) | [Prompt caching docs](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), Anthropic |
+| Fast mode pricing | [Fast mode docs](https://platform.claude.com/docs/en/build-with-claude/fast-mode), Anthropic |
+| Logs getting deleted after 30 days, and `cleanupPeriodDays` | [The .claude directory](https://code.claude.com/docs/en/claude-directory) and the [settings reference](https://code.claude.com/docs/en/settings-reference#cleanupperioddays), Claude Code docs |
+| The log format, `stats-cache.json` and the per-project totals in `~/.claude.json` | As far as I know these aren't publicly documented. I worked them out by reading my own local files, so they might change between Claude Code versions. |
+| The idea of pricing Claude Code's local logs at all | [ccusage](https://github.com/ccusage/ccusage) by ryoppippi (MIT), which made this popular. ClawdyCalc doesn't use any of its code, but it deserves the shout-out. |
+
+### Characters and art
+
+- **Clawd** is Anthropic's Claude Code mascot. The pixel Clawds here are fan art drawn for this project. The hats, samurai gear, Sakura backdrop and calculator logo are all original.
+
+### Theme palettes
+
+Colors are adapted from these open-source themes, all MIT licensed. Go star them.
+
+- **Dracula** by Zeno Rocha and contributors: [draculatheme.com](https://draculatheme.com)
+- **Tokyo Night** by enkia: [tokyo-night-vscode-theme](https://github.com/tokyo-night/tokyo-night-vscode-theme)
+- **Catppuccin** (Mocha) by the Catppuccin org: [catppuccin.com](https://catppuccin.com)
+- **Gruvbox** by Pavel Pertsev (morhetz): [morhetz/gruvbox](https://github.com/morhetz/gruvbox)
+- **Nord** by Sven Greb (Arctic Ice Studio): [nordtheme.com](https://www.nordtheme.com)
+- **Synthwave '84** by Robb Owen: [synthwave-vscode](https://github.com/robb0wen/synthwave-vscode)
+
+The Claude, Terminal and Sakura palettes were made for ClawdyCalc.
+
+### Fonts
+
+All three are under the [SIL Open Font License](https://openfontlicense.org) and load from [Google Fonts](https://fonts.google.com).
+
+- **JetBrains Mono** by JetBrains: [jetbrains.com/mono](https://www.jetbrains.com/lp/mono/)
+- **Source Serif 4** by Frank Grießhammer for Adobe: [adobe-fonts/source-serif](https://github.com/adobe-fonts/source-serif)
+- **Silkscreen** by Jason Kottke: [Google Fonts](https://fonts.google.com/specimen/Silkscreen)
+
+### Code and tools
+
+- The demo data uses the **mulberry32** random number generator by Tommy Ettinger (public domain): [gist](https://gist.github.com/tommyettinger/46a874533244883189143505d203312c)
+- README badges by [shields.io](https://shields.io)
+- README screenshots were taken with [Playwright](https://playwright.dev). It's only used for that, so it isn't a dependency.
 
 ## License
 

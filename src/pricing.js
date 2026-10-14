@@ -1,4 +1,5 @@
 // API list prices in USD per million tokens (first-party Claude API, standard tier).
+// Source: https://platform.claude.com/docs/en/about-claude/pricing (checked October 2026).
 // cacheRead is listed explicitly because it isn't a flat 0.1x on every model.
 // Cache writes are priced from input: 1.25x for the 5-minute TTL, 2x for the 1-hour TTL.
 const PRICING = {

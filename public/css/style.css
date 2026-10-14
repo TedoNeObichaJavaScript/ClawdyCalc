@@ -66,8 +66,14 @@ button, select { font: inherit; color: inherit; }
 /* ---------- header ---------- */
 .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .brand { display: flex; align-items: center; gap: 8px; font-family: var(--serif); font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
-.spark { width: 20px; height: 20px; fill: var(--clay); animation: spin 18s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
+/* the logo: a little pixel calculator that follows the theme colors */
+.logo { width: 20px; height: 24px; flex: none; }
+.logo .b { fill: var(--clay); }
+.logo .s, .logo .k { fill: var(--card); }
+.logo .k { opacity: .85; }
+.logo .e { fill: var(--clay-deep); }
+.logo .d { fill: var(--clay-deep); animation: cursor 1.1s steps(1) infinite; }
+@keyframes cursor { 50% { opacity: 0; } }
 .who { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink-2); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px 4px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .who b { color: var(--ink); font-weight: 600; }
 .live { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex: none; }
@@ -230,7 +236,7 @@ ul { list-style: none; margin: 0; padding: 0; }
 .tooltip b { font-weight: 600; }
 
 @media (prefers-reduced-motion: reduce) {
-  .spark, .cloud, .live.on { animation: none; }
+  .logo .d, .cloud, .live.on { animation: none; }
   .meter-fill, .share > i { transition: none; }
 }
 

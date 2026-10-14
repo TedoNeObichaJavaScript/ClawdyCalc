@@ -13,7 +13,7 @@
     { id: 'gruvbox', name: 'Gruvbox', mono: true, swatch: ['#1d2021', '#282828', '#fe8019'] },
     { id: 'nord', name: 'Nord', mono: true, swatch: ['#2e3440', '#3b4252', '#88c0d0'] },
     { id: 'synthwave', name: 'Synthwave', note: "'84 neon", mono: true, swatch: ['#1a1326', '#2b1055', '#ff7edb'] },
-    { id: 'sakura', name: 'Sakura', note: 'petals + samurai', samurai: true, petals: true, swatch: ['#fdf2f4', '#fffafb', '#e0709a'] },
+    { id: 'sakura', name: 'Sakura', note: 'pixel art + samurai', samurai: true, petals: true, swatch: ['#fdf2f4', '#fffafb', '#e0709a'] },
   ];
 
   let petalsEl = null;
@@ -25,7 +25,7 @@
     petalsEl.setAttribute('aria-hidden', 'true');
     for (let i = 0; i < 22; i++) {
       const p = document.createElement('i');
-      const size = 7 + Math.random() * 8;
+      const size = 5 * (2 + Math.floor(Math.random() * 2)); // 10 or 15px: whole pixels of the 5px sprite
       const dur = 9 + Math.random() * 10;
       p.style.cssText = `left:${Math.random() * 100}%;--s:${size}px;--d:${dur}s;--delay:${-Math.random() * dur}s;`
         + `--sway:${20 + Math.random() * 50}px;--spin:${Math.random() < 0.5 ? -1 : 1};opacity:${0.55 + Math.random() * 0.4}`;
