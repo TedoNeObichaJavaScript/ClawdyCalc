@@ -313,3 +313,34 @@ ul { list-style: none; margin: 0; padding: 0; }
 .keys { display: inline-flex; align-items: center; gap: 4px; }
 kbd { font: 600 10px/1 var(--sans); background: var(--track); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 2px 5px; color: var(--ink-2); }
 @media (max-width: 380px) { .keys { display: none; } }
+
+/* ---------- v4: desktop app (frameless window), compact mode, QoL ---------- */
+.win-controls { display: flex; align-items: center; gap: 2px; margin-left: 2px; }
+.win-btn { width: 28px; height: 28px; display: grid; place-items: center; border: 0; border-radius: 7px; background: none; color: var(--muted); cursor: pointer; transition: background .12s, color .12s; }
+.win-btn svg { width: 14px; height: 14px; fill: currentColor; }
+.win-btn:hover { background: var(--track); color: var(--ink); }
+.win-btn.close:hover { background: #d9483b; color: #fff; }
+.win-btn[aria-pressed="true"] { color: var(--clay-deep); background: var(--clay-soft); }
+#pinBtn[aria-pressed="true"] svg { transform: rotate(-45deg); }
+#compactBtn .c-closed, #compactBtn[aria-pressed="true"] .c-open { display: none; }
+#compactBtn[aria-pressed="true"] .c-closed { display: inline; }
+
+/* the header is the title bar: drag it to move the window */
+:root[data-desktop] .top { -webkit-app-region: drag; user-select: none; margin: -14px -16px 0; padding: 10px 10px 4px 16px; }
+:root[data-desktop] .top :is(button, select, .who, .theme-pop) { -webkit-app-region: no-drag; }
+:root[data-desktop] .who-name { display: none; }
+:root[data-desktop] .tab { padding-top: 14px; }
+
+/* compact widget: header, Clawds and the big number only */
+:root[data-compact] :is(.card, .foot, .fine.center) { display: none !important; }
+:root[data-compact] body { overflow: hidden; }
+
+/* quieter scrollbars */
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 9px; border: 2px solid var(--bg); }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+::-webkit-scrollbar-track { background: transparent; }
+
+.warn { position: relative; padding-right: 30px; }
+.dismiss { position: absolute; top: 6px; right: 8px; width: 22px; height: 22px; border: 0; border-radius: 6px; background: none; color: var(--muted); font-size: 16px; line-height: 1; cursor: pointer; }
+.dismiss:hover { background: var(--track); color: var(--ink); }

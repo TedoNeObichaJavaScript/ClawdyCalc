@@ -9,7 +9,8 @@ Me too. So I built a tiny dashboard where little pixel Clawds bounce around whil
 
 ![MIT license](https://img.shields.io/badge/license-MIT-D97757)
 ![Node 18+](https://img.shields.io/badge/node-18%2B-D97757)
-![Zero dependencies](https://img.shields.io/badge/dependencies-0-D97757)
+![Windows app](https://img.shields.io/badge/Windows-desktop%20app-D97757)
+![Zero dependencies](https://img.shields.io/badge/browser%20version-0%20dependencies-D97757)
 ![Runs locally](https://img.shields.io/badge/runs-100%25%20locally-D97757)
 
 <img src="docs/screenshot.png" alt="ClawdyCalc in light mode, showing demo data" width="49%">&nbsp;<img src="docs/screenshot-dark.png" alt="ClawdyCalc in dark mode, showing demo data" width="49%">
@@ -84,13 +85,43 @@ Click the palette in the top right, or just press <kbd>T</kbd> to flip through t
 |---|---|
 | <kbd>T</kbd> / <kbd>Shift</kbd>+<kbd>T</kbd> | next / previous theme |
 | <kbd>1</kbd> to <kbd>5</kbd> | Today, 7D, 30D, Month, All |
+| <kbd>R</kbd> | refresh now |
 | <kbd>Esc</kbd> | close the theme picker |
+| <kbd>P</kbd> | pin on top (desktop app) |
+| <kbd>C</kbd> | compact mode (desktop app) |
+| <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> | show or hide ClawdyCalc from anywhere (desktop app) |
 
 Want your favorite editor theme in here? A theme is about 15 CSS variables in [`public/css/themes.css`](public/css/themes.css) plus one line in [`public/js/themes.js`](public/js/themes.js). PRs welcome.
 
 ## Get it running
 
-You need [Node.js](https://nodejs.org) 18 or newer. That's it. No `npm install`, because there are no dependencies.
+You need [Node.js](https://nodejs.org) 18 or newer. There are two ways to run it.
+
+### The desktop app (recommended)
+
+A real Windows app with its own window, taskbar icon and tray icon.
+
+```bash
+git clone https://github.com/TedoNeObichaJavaScript/ClawdyCalc.git
+cd ClawdyCalc
+npm install
+npm run app
+```
+
+To get a proper installer (Start menu and desktop shortcuts, uninstaller) plus a portable `.exe`, run `npm run dist` and look in `dist/`. The builds aren't code-signed, so the first time Windows SmartScreen will say "Windows protected your PC". Click **More info**, then **Run anyway**.
+
+What the desktop app adds:
+
+- **Pin on top.** Hit the pin and ClawdyCalc floats above everything, like a little widget.
+- **Compact mode.** Shrinks the window to just the Clawds and today's number. Pinned + compact is the best way to keep an eye on your burn rate.
+- **Lives in the tray.** Closing the window hides it, so it keeps archiving your usage in the background. The tray tooltip shows today's and this month's spend. Right-click the tray icon to quit.
+- **Start with Windows**, **window opacity** and **pin/compact** live in the tray menu.
+- **Remembers** where you left the window, how big it was, and whether it was pinned.
+- **Global hotkey** <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> to pop it up from anywhere.
+
+### The browser version (zero dependencies)
+
+No `npm install` needed at all.
 
 ```bash
 git clone https://github.com/TedoNeObichaJavaScript/ClawdyCalc.git
@@ -98,7 +129,7 @@ cd ClawdyCalc
 npm start
 ```
 
-It starts a little server at `http://localhost:4317` and pops open a small window. On Windows you can also just double-click **`ClawdyCalc.bat`**.
+It starts a little server at `http://localhost:4317` and opens it in a small browser window. On Windows you can also double-click **`ClawdyCalc.bat`**, which opens the desktop app if you've run `npm install`, and the browser version if you haven't.
 
 Want to see it without your own data? Open `http://localhost:4317/?demo`.
 
@@ -115,6 +146,9 @@ node bin/clawdycalc.js --no-open     # don't open a window, just serve
 | `PORT` | Same as `--port` |
 | `CLAUDE_CONFIG_DIR` | Where your Claude Code config lives, if you moved it |
 | `CLAWDYCALC_HOME` | Where ClawdyCalc keeps its archive (default `~/.clawdycalc`) |
+
+> [!TIP]
+> Running `npm run app` from a terminal inside VS Code? VS Code sets `ELECTRON_RUN_AS_NODE`, which stops Electron apps from opening a window. The `app` script clears it for you, but if you launch Electron some other way, unset it first.
 
 </details>
 
@@ -157,11 +191,14 @@ Claude Code logs one line per chunk of a response, all with the same message ID,
 
 Nope. The server listens on `127.0.0.1` only, has no telemetry, and never makes a network request except for loading the Google Fonts the page uses. It reads your files, does math, and shows you a page. That's all.
 
+The desktop app is the same thing in its own window. The page inside it can't touch your files or Node. It can only ask the app to pin, resize or hide the window.
+
 ## Project layout
 
 ```
 ClawdyCalc/
 ├── bin/clawdycalc.js        the CLI you run
+├── desktop/                 the Electron app: main.js (window, tray, pin), preload.js, icons/
 ├── src/
 │   ├── server.js            tiny HTTP server + API
 │   ├── sources/             where the numbers come from
@@ -177,7 +214,8 @@ ClawdyCalc/
 │   ├── img/                 theme backdrops (Mt. Fuji lives here)
 │   └── js/                  app.js, stage.js (the playground), sprites.js (the Clawds),
 │                            themes.js (theme picker, petals, samurai mode)
-├── scripts/build-readme-art.js   generates the SVGs in this README
+├── scripts/                 build-readme-art.js, build-theme-art.js, build-icons.js (all the pixel art),
+│                            launch-app.js (npm run app)
 └── docs/                    README images and theme previews
 ```
 
@@ -187,13 +225,13 @@ PRs are very welcome. Some ideas if you're looking for one:
 
 - More themes! Solarized, One Dark, Rosé Pine, your call.
 - More hats! Every model deserves a look. Hats live in `public/js/sprites.js` as tiny pixel grids.
-- A tray or menu-bar version
+- macOS and Linux builds of the desktop app (the config is there, it just needs testing)
 - Testing on macOS and Linux (I built it on Windows)
 - More charts, like spend by hour of day
 
 When a new model comes out, add it to `src/pricing.js` and give it a hat. If you change the sprites, run `npm run art` to regenerate the README art.
 
-One rule: **no dependencies.** Keeping it zero-install is half the charm.
+One rule: **the browser version stays dependency-free.** Electron is only for the desktop wrapper, and everything in `src/` and `public/` has to keep working with plain Node.
 
 ## Credits
 
@@ -239,6 +277,7 @@ All three are under the [SIL Open Font License](https://openfontlicense.org) and
 
 - The demo data uses the **mulberry32** random number generator by Tommy Ettinger (public domain): [gist](https://gist.github.com/tommyettinger/46a874533244883189143505d203312c)
 - README badges by [shields.io](https://shields.io)
+- The desktop app is built with [Electron](https://www.electronjs.org) and packaged with [electron-builder](https://www.electron.build) (both MIT)
 - README screenshots were taken with [Playwright](https://playwright.dev). It's only used for that, so it isn't a dependency.
 
 ## License

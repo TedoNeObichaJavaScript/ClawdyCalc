@@ -48,9 +48,11 @@ function send(res, code, body, type = 'application/json; charset=utf-8') {
   res.end(body);
 }
 
-function handler(port) {
-  const allowedHosts = new Set([`localhost:${port}`, `127.0.0.1:${port}`]);
+// getPort() because the real port is only known after listen() (the desktop app may ask for port 0)
+function handler(getPort) {
   return async (req, res) => {
+    const port = getPort();
+    const allowedHosts = new Set([`localhost:${port}`, `127.0.0.1:${port}`]);
     // Blocks DNS-rebinding: only answer requests addressed to us by name.
     if (!allowedHosts.has(req.headers.host)) return send(res, 403, 'forbidden', 'text/plain');
     const url = new URL(req.url, `http://${req.headers.host}`);
@@ -91,30 +93,50 @@ function openWindow(url) {
   }
 }
 
-async function start({ port = 4317, open = true } = {}) {
-  const url = `http://localhost:${port}`;
-  await ledger.load();
-  const server = http.createServer(handler(port));
+let loaded = false;
+let archiveTimer = null;
 
-  server.on('error', (err) => {
-    if (err.code !== 'EADDRINUSE') throw err;
-    console.log(`Port ${port} is busy, so ClawdyCalc is probably already running. Opening it.`);
-    if (open) openWindow(url);
-    setTimeout(() => process.exit(0), 500);
-  });
+// Options:
+//   port        4317 by default; 0 picks any free port
+//   open        open a browser window once ready
+//   exitIfBusy  CLI behavior: if the port is taken, open the running copy and exit.
+//               The desktop app passes false and gets the EADDRINUSE error instead.
+//   log         where to print status lines
+async function start({ port = 4317, open = true, exitIfBusy = true, log = console.log } = {}) {
+  if (!loaded) { await ledger.load(); loaded = true; }
+  let actualPort = port;
+  const server = http.createServer(handler(() => actualPort));
 
-  server.listen(port, '127.0.0.1', async () => {
-    console.log(`ClawdyCalc is running at ${url}`);
-    console.log(`Reading Claude Code logs from ${paths.PROJECTS_DIRS.join(', ') || '(none found)'}`);
-    console.log(`Archiving to ${paths.DATA_DIR}`);
-    const t = Date.now();
-    const { files } = await collect();
-    console.log(`Indexed ${files} log files in ${Date.now() - t}ms. ${ledger.messages.size} messages archived.`);
-    if (open) openWindow(url);
-    // Keep archiving in the background so history is saved even with the window closed.
-    setInterval(() => collect().catch((e) => console.error('archive failed:', e.message)), ARCHIVE_EVERY_MS).unref();
-  });
-  return server;
+  try {
+    await new Promise((resolve, reject) => {
+      server.once('error', reject);
+      server.listen(port, '127.0.0.1', resolve);
+    });
+  } catch (err) {
+    if (err.code === 'EADDRINUSE' && exitIfBusy) {
+      log(`Port ${port} is busy, so ClawdyCalc is probably already running. Opening it.`);
+      if (open) openWindow(`http://localhost:${port}`);
+      setTimeout(() => process.exit(0), 500);
+      return null;
+    }
+    throw err;
+  }
+
+  actualPort = server.address().port;
+  const url = `http://localhost:${actualPort}`;
+  log(`ClawdyCalc is running at ${url}`);
+  log(`Reading Claude Code logs from ${paths.PROJECTS_DIRS.join(', ') || '(none found)'}`);
+  log(`Archiving to ${paths.DATA_DIR}`);
+  const t = Date.now();
+  const { files } = await collect();
+  log(`Indexed ${files} log files in ${Date.now() - t}ms. ${ledger.messages.size} messages archived.`);
+  if (open) openWindow(url);
+  // Keep archiving in the background so history is saved even with the window closed.
+  if (!archiveTimer) {
+    archiveTimer = setInterval(() => collect().catch((e) => log('archive failed: ' + e.message)), ARCHIVE_EVERY_MS);
+    archiveTimer.unref();
+  }
+  return { server, port: actualPort, url };
 }
 
 module.exports = { start };

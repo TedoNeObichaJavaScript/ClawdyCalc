@@ -113,6 +113,9 @@
     renderProjects(rows);
     renderFoot();
     stage.relabel();
+    if (window.ClawdyDesktop) {
+      window.ClawdyDesktop.summary(`Today ${money(sum(rowsIn('today')).cost)} · This month ${money(sum(rowsIn('month')).cost)}`);
+    }
   }
 
   function currentPlan() {
@@ -123,7 +126,9 @@
 
   function renderRetention() {
     const r = data.retention;
-    const show = r && !r.forever && !data.demo;
+    let snoozed = false;
+    try { snoozed = Date.now() < Number(localStorage.getItem('cc.retentionSnooze') || 0); } catch {}
+    const show = r && !r.forever && !data.demo && !snoozed;
     $('retention').hidden = !show;
     if (show) $('retentionDays').textContent = r.days;
   }
@@ -429,7 +434,7 @@
     const plan = currentPlan();
     $('demoBadge').hidden = !data.demo;
     $('whoText').innerHTML = a.loggedIn
-      ? `${esc(a.name || 'You')} · <b>${esc(plan.label)}</b>`
+      ? `<span class="who-name">${esc(a.name || 'You')} · </span><b>${esc(plan.label)}</b>`
       : `Not logged in · <b>${esc(plan.label)}</b>`;
     $('who').title = a.loggedIn ? 'Logged in to Claude Code' : 'Log in with `claude` to see your account here';
   }
@@ -496,6 +501,7 @@
   function setTheme(id) {
     theme = Themes.apply(id, (t) => {
       stage.setVariant({ samurai: t.samurai });
+      if (window.ClawdyDesktop) window.ClawdyDesktop.background(getComputedStyle(document.documentElement).getPropertyValue('--bg').trim());
       if (data) render();
     });
     store.set('cc.theme', theme.id);
@@ -534,6 +540,7 @@
     if (e.target.closest('input, select, textarea')) return;
     if (e.key === 'Escape' && !$('themePop').hidden) { toggleThemePicker(false); $('themeBtn').focus(); return; }
     if (e.key === 't' || e.key === 'T') { cycleTheme(e.shiftKey ? -1 : 1); return; }
+    if (e.key === 'r' || e.key === 'R') { load(); return; }
     const ranges = ['today', '7d', '30d', 'month', 'all'];
     const n = Number(e.key);
     if (n >= 1 && n <= 5) { range = ranges[n - 1]; store.set('cc.range', range); render(); }
@@ -591,6 +598,11 @@
   });
 
   $('exportCsv').addEventListener('click', () => data && exportCsv());
+
+  $('dismissRetention').addEventListener('click', () => {
+    store.set('cc.retentionSnooze', String(Date.now() + 7 * 86400000));
+    $('retention').hidden = true;
+  });
 
   let resizeT;
   window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => data && renderChart(), 120); });

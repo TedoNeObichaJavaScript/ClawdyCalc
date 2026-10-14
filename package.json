@@ -1,8 +1,10 @@
 {
   "name": "clawdycalc",
-  "version": "1.0.0",
+  "productName": "ClawdyCalc",
+  "version": "1.1.0",
   "description": "See what your Claude Code usage would cost at API prices, with tiny pixel Clawds bouncing around.",
   "license": "MIT",
+  "author": "TedoNeObichaJavaScript",
   "repository": "github:TedoNeObichaJavaScript/ClawdyCalc",
   "keywords": [
     "claude",
@@ -12,20 +14,72 @@
     "cost",
     "anthropic"
   ],
+  "main": "desktop/main.js",
   "bin": {
     "clawdycalc": "bin/clawdycalc.js"
   },
   "files": [
     "bin",
     "src",
-    "public"
+    "public",
+    "desktop"
   ],
   "scripts": {
     "start": "node bin/clawdycalc.js",
     "dev": "node bin/clawdycalc.js --no-open",
-    "art": "node scripts/build-readme-art.js && node scripts/build-theme-art.js"
+    "app": "node scripts/launch-app.js",
+    "dist": "electron-builder --win",
+    "art": "node scripts/build-readme-art.js && node scripts/build-theme-art.js && node scripts/build-icons.js"
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "electron": "44.5.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.tedoneobicha.clawdycalc",
+    "productName": "ClawdyCalc",
+    "copyright": "MIT License",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "desktop/**/*",
+      "src/**/*",
+      "public/**/*",
+      "package.json",
+      "LICENSE"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "desktop/icons/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ClawdyCalc",
+      "artifactName": "ClawdyCalc-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "ClawdyCalc-${version}-portable.${ext}"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "desktop/icons/icon.png",
+      "category": "public.app-category.developer-tools"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "desktop/icons/icon.png",
+      "category": "Development"
+    }
   }
 }
