@@ -2,6 +2,7 @@
   const $ = (id) => document.getElementById(id);
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const POLL_MS = 20000;
+  const HIDDEN_POLL_MS = 5 * 60 * 1000;
   const DEMO = new URLSearchParams(location.search).has('demo');
   const LOCALE = 'en-US'; // the UI copy is English, so keep dates English too
 
@@ -607,7 +608,10 @@
   let resizeT;
   window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => data && renderChart(), 120); });
   document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - lastFetch > 5000) load(); });
-  setInterval(() => { if (!document.hidden) load(); }, POLL_MS);
+  // In the desktop app a hidden window still refreshes now and then, so the tray tooltip stays current.
+  setInterval(() => {
+    if (!document.hidden || (window.ClawdyDesktop && Date.now() - lastFetch > HIDDEN_POLL_MS)) load();
+  }, POLL_MS);
   setInterval(renderFoot, 5000);
   load();
 })();

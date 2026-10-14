@@ -10,7 +10,7 @@ const path = require('path');
 const ICON = path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png');
 const HOTKEY = 'CommandOrControl+Alt+Shift+C';
 const STARTED_HIDDEN = process.argv.includes('--hidden'); // set when launched at login
-const DEFAULTS = { width: 460, height: 860, compactHeight: 330, pinned: false, compact: false, opacity: 1, trayHintShown: false };
+const DEFAULTS = { width: 460, height: 860, compactHeight: 330, pinned: false, compact: false, opacity: 1, trayHintShown: false, background: '#F3F0E8' };
 
 let win = null;
 let tray = null;
@@ -18,6 +18,7 @@ let serverUrl = null;
 let quitting = false;
 let state = null;
 let summary = '';
+let lastBlur = 0;
 
 app.setAppUserModelId('com.tedoneobicha.clawdycalc'); // groups the taskbar icon so it can be pinned
 
@@ -89,7 +90,7 @@ function publicState() {
     pinned: state.pinned,
     compact: state.compact,
     opacity: state.opacity,
-    autoStart: app.getLoginItemSettings().openAtLogin,
+    autoStart: app.getLoginItemSettings(loginItem()).openAtLogin,
     hotkey: HOTKEY.replace('CommandOrControl', process.platform === 'darwin' ? 'Cmd' : 'Ctrl'),
   };
 }
@@ -108,7 +109,9 @@ function createWindow() {
     show: false,
     title: 'ClawdyCalc',
     icon: ICON,
-    backgroundColor: '#F3F0E8',
+    backgroundColor: state.background, // last theme's color, so a dark theme doesn't flash light on start
+    maximizable: false, // double-clicking the drag bar would otherwise maximize the little widget
+    fullscreenable: false,
     alwaysOnTop: state.pinned,
     opacity: state.opacity,
     webPreferences: {
@@ -128,7 +131,7 @@ function createWindow() {
     return { action: 'deny' };
   });
   win.webContents.on('will-navigate', (e, url) => {
-    if (!url.startsWith(serverUrl)) { e.preventDefault(); if (/^https?:\/\//.test(url)) shell.openExternal(url); }
+    if (!isOurs(url)) { e.preventDefault(); if (/^https?:\/\//.test(url)) shell.openExternal(url); }
   });
 
   const remember = () => {
@@ -142,6 +145,7 @@ function createWindow() {
   win.on('move', remember);
   win.on('show', broadcast); // keeps the tray's Show/Hide label right
   win.on('hide', broadcast);
+  win.on('blur', () => { lastBlur = Date.now(); });
 
   // closing hides to the tray, so archiving keeps going; Quit lives in the tray menu
   win.on('close', (e) => {
@@ -163,8 +167,9 @@ function show() {
   win.focus();
 }
 
+// Clicking the tray icon takes focus from the window first, so "was focused a moment ago" counts too.
 function toggle() {
-  if (win.isVisible() && win.isFocused()) win.hide(); else show();
+  if (win.isVisible() && (win.isFocused() || Date.now() - lastBlur < 300)) win.hide(); else show();
 }
 
 function setPinned(on) {
@@ -193,8 +198,16 @@ function setOpacity(v) {
   broadcast();
 }
 
+// The portable exe unpacks to a temp folder, so point Windows at the real exe; in dev, electron.exe needs the app folder.
+function loginItem() {
+  return {
+    path: process.env.PORTABLE_EXECUTABLE_FILE || process.execPath,
+    args: app.isPackaged ? ['--hidden'] : [app.getAppPath(), '--hidden'],
+  };
+}
+
 function setAutoStart(on) {
-  app.setLoginItemSettings({ openAtLogin: !!on, args: ['--hidden'] });
+  app.setLoginItemSettings({ openAtLogin: !!on, ...loginItem() });
   broadcast();
 }
 
@@ -231,7 +244,8 @@ function createTray() {
 // ---------- messages from the page ----------
 
 // only our own page may drive the window
-const fromUs = (e) => !!serverUrl && !!e.senderFrame && e.senderFrame.url.startsWith(serverUrl);
+const isOurs = (url) => !!serverUrl && (url === serverUrl || url.startsWith(serverUrl + '/'));
+const fromUs = (e) => !!e.senderFrame && isOurs(e.senderFrame.url);
 
 ipcMain.handle('win:get-state', (e) => (fromUs(e) ? publicState() : null));
 ipcMain.handle('win:pin', (e, on) => { if (fromUs(e)) setPinned(on); return publicState(); });
@@ -244,7 +258,9 @@ ipcMain.on('win:summary', (e, text) => {
   if (tray) { tray.setToolTip(`ClawdyCalc\n${summary}`); tray.setContextMenu(trayMenu()); }
 });
 ipcMain.on('win:background', (e, color) => {
-  if (fromUs(e) && /^#[0-9a-f]{3,8}$/i.test(color)) win.setBackgroundColor(color);
+  if (!fromUs(e) || !/^#[0-9a-f]{3,8}$/i.test(color)) return;
+  win.setBackgroundColor(color);
+  if (state.background !== color) { state.background = color; saveState(); }
 });
 
 // ---------- lifecycle ----------

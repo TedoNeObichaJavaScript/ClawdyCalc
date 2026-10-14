@@ -19,7 +19,15 @@ const ARCHIVE_EVERY_MS = 5 * 60 * 1000;
 const ledger = new Ledger(paths.DATA_DIR);
 
 // Read every source, archive what's new, return everything we know.
-async function collect() {
+// Concurrent callers (the archive timer, several open windows) share one run so the
+// archive files are never written twice at once.
+let collecting = null;
+function collect() {
+  if (!collecting) collecting = collectOnce().finally(() => { collecting = null; });
+  return collecting;
+}
+
+async function collectOnce() {
   const [{ messages: live, sessions, files }, stats, lastSessions] = await Promise.all([
     scanLogs(paths.PROJECTS_DIRS),
     readStatsCache(paths.STATS_CACHE),
@@ -70,12 +78,13 @@ function handler(getPort) {
         return send(res, 200, JSON.stringify(await keepLogsForever()));
       }
       if (req.method !== 'GET') return send(res, 405, 'method not allowed', 'text/plain');
-      const rel = url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname.slice(1));
+      let rel;
+      try { rel = url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname.slice(1)); } catch { return send(res, 400, 'bad request', 'text/plain'); }
       const file = path.join(paths.PUBLIC_DIR, rel);
       if (!file.startsWith(paths.PUBLIC_DIR + path.sep)) return send(res, 403, 'forbidden', 'text/plain');
       send(res, 200, await fsp.readFile(file), MIME[path.extname(file)] || 'application/octet-stream');
     } catch (err) {
-      if (err.code === 'ENOENT') return send(res, 404, 'not found', 'text/plain');
+      if (err.code === 'ENOENT' || err.code === 'EISDIR') return send(res, 404, 'not found', 'text/plain');
       console.error(err);
       send(res, 500, JSON.stringify({ error: String(err.message || err) }));
     }

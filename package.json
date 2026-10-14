@@ -1,7 +1,7 @@
 {
   "name": "clawdycalc",
   "productName": "ClawdyCalc",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "See what your Claude Code usage would cost at API prices, with tiny pixel Clawds bouncing around.",
   "license": "MIT",
   "author": "TedoNeObichaJavaScript",
