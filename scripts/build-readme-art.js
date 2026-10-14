@@ -11,8 +11,8 @@ const OUT = path.join(__dirname, '..', 'docs');
 fs.mkdirSync(path.join(OUT, 'clawds'), { recursive: true });
 
 // strip the outer <svg> so a sprite can be nested inside a bigger drawing
-function inner(model, px) {
-  const s = Sprites.svg(model, px, { tight: true });
+function inner(model, px, samurai = false) {
+  const s = Sprites.svg(model, px, { tight: true, samurai });
   const w = +s.match(/width="(\d+)"/)[1];
   const h = +s.match(/height="(\d+)"/)[1];
   const viewBox = s.match(/viewBox="([^"]+)"/)[1];
@@ -98,9 +98,11 @@ const icons = {
   'sonnet': 'claude-sonnet-5-5',
   'haiku': 'claude-haiku-5-5',
   'mystery': 'claude-unknown',
+  'samurai': ['claude-opus-5-5', true],
 };
-for (const [name, model] of Object.entries(icons)) {
-  const s = inner(model, 4);
+for (const [name, spec] of Object.entries(icons)) {
+  const [model, samurai] = Array.isArray(spec) ? spec : [spec, false];
+  const s = inner(model, 4, samurai);
   const pad = 10;
   const iw = s.w + pad * 2, ih = s.h + pad + 4;
   const icon = `<svg xmlns="http://www.w3.org/2000/svg" width="${iw}" height="${ih}" viewBox="0 0 ${iw} ${ih}">

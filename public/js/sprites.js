@@ -76,15 +76,15 @@
 
   function look(model) {
     const m = String(model || '');
-    if (/fable-5-1/.test(m)) return { hat: 'wizard', colors: { P: '#6E5BD6', S: '#F2C94C' }, scale: 1 };
-    if (/fable/.test(m)) return { hat: 'wizard', colors: { P: '#3F8F8A', S: '#F2C94C' }, scale: 1 };
-    if (/mythos/.test(m)) return { hat: 'wizard', colors: { P: '#9C3B4A', S: '#F2C94C' }, scale: 1 };
-    if (/opus-5-5/.test(m)) return { hat: 'crown', colors: { Y: '#E8B94A', R: '#C2413A' }, scale: 1 };
-    if (/opus-5/.test(m)) return { hat: 'gradcap', colors: { K: '#34477A', T: '#E8B94A' }, scale: 1 };
-    if (/opus/.test(m)) return { hat: 'beanie', colors: { B: '#3D5A80', W: '#F4F1EA' }, scale: 1 };
-    if (/sonnet/.test(m)) return { hat: 'headphones', colors: { H: '#77726A', C: '#5C8FA8' }, scale: 0.9 };
-    if (/haiku/.test(m)) return { hat: 'sprout', colors: { G: '#6FA35A' }, scale: 0.75 };
-    return { hat: 'party', colors: { P: '#D96BA0', Y: '#F2C94C' }, scale: 0.9 };
+    if (/fable-5-1/.test(m)) return { hat: 'wizard', colors: { P: '#6E5BD6', S: '#F2C94C' }, kabuto: '#6E5BD6', scale: 1 };
+    if (/fable/.test(m)) return { hat: 'wizard', colors: { P: '#3F8F8A', S: '#F2C94C' }, kabuto: '#3F8F8A', scale: 1 };
+    if (/mythos/.test(m)) return { hat: 'wizard', colors: { P: '#9C3B4A', S: '#F2C94C' }, kabuto: '#9C3B4A', scale: 1 };
+    if (/opus-5-5/.test(m)) return { hat: 'crown', colors: { Y: '#E8B94A', R: '#C2413A' }, kabuto: '#C2413A', scale: 1 };
+    if (/opus-5/.test(m)) return { hat: 'gradcap', colors: { K: '#34477A', T: '#E8B94A' }, kabuto: '#34477A', scale: 1 };
+    if (/opus/.test(m)) return { hat: 'beanie', colors: { B: '#3D5A80', W: '#F4F1EA' }, kabuto: '#2F3B33', scale: 1 };
+    if (/sonnet/.test(m)) return { hat: 'headphones', colors: { H: '#77726A', C: '#5C8FA8' }, kabuto: '#5C8FA8', scale: 0.9 };
+    if (/haiku/.test(m)) return { hat: 'sprout', colors: { G: '#6FA35A' }, kabuto: '#6FA35A', scale: 0.75 };
+    return { hat: 'party', colors: { P: '#D96BA0', Y: '#F2C94C' }, kabuto: '#D96BA0', scale: 0.9 };
   }
 
   // merge horizontal runs of the same color into one rect each
@@ -115,9 +115,46 @@
   const LEGS_B = [3, 5, 10, 12].map((x) => r(x, 8, 1, 1, CLAY)).join('')
     + [2, 6, 9, 13].map((x) => r(x, 9, 1, 1, CLAY)).join('');
 
-  // px = size of one pixel on screen
+  // Samurai mode (Sakura theme): a kabuto helmet in the model's color, plus a katana.
+  // The kuwagata crest is gold, the brim and side flaps a darker shade of the helmet.
+  const KABUTO = {
+    rows: [
+      '..Y..........Y..',
+      '...Y........Y...',
+      '....YHHHHHHY....',
+      '...HHHHYYHHHH...',
+      '..DDDDDDDDDDDD..',
+      '.DD..........DD.',
+      '.D............D.',
+    ],
+    from: -5,
+  };
+  // held upright in the right hand, just past the arm (so the grid is 18 wide)
+  const KATANA = '<g class="katana">' + r(16, -6, 1, 9, '#E6ECF2') + r(16, -6, 1, 1, '#FFFFFF')
+    + r(15, 3, 3, 1, '#E8B94A') + r(16, 4, 1, 3, '#3B2A30') + r(16, 5, 1, 1, '#8A5A6A') + '</g>';
+
+  function shade(hex, f) {
+    const n = parseInt(hex.slice(1), 16);
+    const c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => Math.round(v * (1 + f)));
+    return '#' + c.map((v) => Math.max(0, Math.min(255, v)).toString(16).padStart(2, '0')).join('');
+  }
+
+  function samuraiSvg(l, px, opts) {
+    const top = opts.tight ? -6 : TOP;
+    const h = 10 - top;
+    const helm = rowsToRects(KABUTO.rows, KABUTO.from, { Y: '#E8B94A', H: l.kabuto, D: shade(l.kabuto, -0.35) });
+    return `<svg width="${18 * px}" height="${h * px}" viewBox="0 ${top} 18 ${h}" aria-hidden="true">`
+      + `<g class="legs-a">${LEGS_A}</g><g class="legs-b">${LEGS_B}</g>`
+      + BODY
+      + `<g class="eyes-open">${EYES_OPEN}</g><g class="eyes-shut">${EYES_SHUT}</g><g class="eyes-happy">${EYES_HAPPY}</g>`
+      + helm + KATANA
+      + '</svg>';
+  }
+
+  // px = size of one pixel on screen. opts: { tight, samurai }
   function svg(model, px, opts = {}) {
     const l = look(model);
+    if (opts.samurai) return samuraiSvg(l, px, opts);
     const hat = HATS[l.hat];
     const top = opts.tight ? hat.from : TOP;
     const h = 10 - top;

@@ -1,0 +1,151 @@
+/* Themes. Each one only sets the variables style.css already uses, plus a few extras.
+   "claude" is the default and lives in style.css (follows light/dark automatically). */
+
+:root[data-mono] {
+  --serif: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  --sans: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+
+/* ---------- Terminal: green phosphor CRT ---------- */
+:root[data-theme="terminal"] {
+  --bg: #050a06; --card: #0b140d; --ink: #c8ffcc; --ink-2: #8fdc95; --muted: #5c9a63; --line: #173b1d;
+  --clay: #3dff6e; --clay-deep: #9dffb3; --clay-soft: #12391b; --track: #0f2414;
+  --sky-top: #061008; --sky-bottom: #0a1a0d; --ground: #0d2611; --ground-edge: #2a7a37; --cloud: #12301a;
+  --shadow: rgba(0, 0, 0, .5); --glow: 0 0 8px rgba(61, 255, 110, .45);
+  color-scheme: dark;
+}
+:root[data-theme="terminal"] body::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 40;
+  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .22) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply;
+}
+:root[data-theme="terminal"] .mascot svg,
+:root[data-theme="terminal"] .mini svg { filter: grayscale(1) sepia(1) hue-rotate(70deg) saturate(3.5) brightness(1.05) drop-shadow(0 0 3px rgba(61, 255, 110, .5)); }
+
+/* ---------- Dracula ---------- */
+:root[data-theme="dracula"] {
+  --bg: #21222c; --card: #282a36; --ink: #f8f8f2; --ink-2: #d6d6e0; --muted: #8b93c4; --line: #3a3c4e;
+  --clay: #bd93f9; --clay-deep: #ff79c6; --clay-soft: #44385e; --track: #343746;
+  --sky-top: #282a36; --sky-bottom: #303244; --ground: #44475a; --ground-edge: #6272a4; --cloud: #3a3d52;
+  --shadow: rgba(0, 0, 0, .4);
+  color-scheme: dark;
+}
+
+/* ---------- Tokyo Night ---------- */
+:root[data-theme="tokyo"] {
+  --bg: #16161e; --card: #1a1b26; --ink: #c0caf5; --ink-2: #a9b1d6; --muted: #7a82ab; --line: #292e42;
+  --clay: #7aa2f7; --clay-deep: #bb9af7; --clay-soft: #2a3454; --track: #232433;
+  --sky-top: #1a1b26; --sky-bottom: #24283b; --ground: #2f334d; --ground-edge: #414868; --cloud: #2a2e44;
+  --shadow: rgba(0, 0, 0, .45);
+  color-scheme: dark;
+}
+
+/* ---------- Catppuccin Mocha ---------- */
+:root[data-theme="catppuccin"] {
+  --bg: #11111b; --card: #1e1e2e; --ink: #cdd6f4; --ink-2: #bac2de; --muted: #8b8fa8; --line: #313244;
+  --clay: #cba6f7; --clay-deep: #f5c2e7; --clay-soft: #3b3452; --track: #2a2b3c;
+  --sky-top: #1e1e2e; --sky-bottom: #262637; --ground: #313244; --ground-edge: #45475a; --cloud: #313244;
+  --shadow: rgba(0, 0, 0, .45);
+  color-scheme: dark;
+}
+
+/* ---------- Gruvbox ---------- */
+:root[data-theme="gruvbox"] {
+  --bg: #1d2021; --card: #282828; --ink: #ebdbb2; --ink-2: #d5c4a1; --muted: #a89984; --line: #3c3836;
+  --clay: #fe8019; --clay-deep: #fabd2f; --clay-soft: #4a3420; --track: #32302f;
+  --sky-top: #282828; --sky-bottom: #32302f; --ground: #504945; --ground-edge: #665c54; --cloud: #3c3836;
+  --shadow: rgba(0, 0, 0, .45);
+  color-scheme: dark;
+}
+
+/* ---------- Nord ---------- */
+:root[data-theme="nord"] {
+  --bg: #2e3440; --card: #3b4252; --ink: #eceff4; --ink-2: #d8dee9; --muted: #a3acbf; --line: #4c566a;
+  --clay: #88c0d0; --clay-deep: #8fbcbb; --clay-soft: #3d5361; --track: #434c5e;
+  --sky-top: #3b4252; --sky-bottom: #434c5e; --ground: #4c566a; --ground-edge: #5e81ac; --cloud: #4c566a;
+  --shadow: rgba(0, 0, 0, .3);
+  color-scheme: dark;
+}
+
+/* ---------- Synthwave '84: neon sunset over a grid ---------- */
+:root[data-theme="synthwave"] {
+  --bg: #1a1326; --card: #241b2f; --ink: #fdfdfd; --ink-2: #e0d7f0; --muted: #a197cc; --line: #3b2d52;
+  --clay: #ff7edb; --clay-deep: #72f1b8; --clay-soft: #4a2550; --track: #2e2340;
+  --sky-top: #1b0b3a; --sky-bottom: #9a2a6e; --ground: #160a2a; --ground-edge: #ff7edb; --cloud: #4a2a6a;
+  --shadow: rgba(255, 126, 219, .25); --glow: 0 0 10px rgba(255, 126, 219, .55);
+  color-scheme: dark;
+}
+:root[data-theme="synthwave"] .cloud { display: none; }
+:root[data-theme="synthwave"] .deco::before {
+  content: ""; position: absolute; left: 50%; bottom: 0; width: 120px; height: 60px; margin-left: -60px;
+  border-radius: 120px 120px 0 0;
+  background: linear-gradient(#ffd319, #ff8b4a 45%, #ff2975);
+  -webkit-mask: linear-gradient(#000 0 40%, transparent 40% 46%, #000 46% 58%, transparent 58% 64%, #000 64% 74%, transparent 74% 80%, #000 80% 88%, transparent 88% 93%, #000 93%);
+  mask: linear-gradient(#000 0 40%, transparent 40% 46%, #000 46% 58%, transparent 58% 64%, #000 64% 74%, transparent 74% 80%, #000 80% 88%, transparent 88% 93%, #000 93%);
+  filter: drop-shadow(0 0 12px rgba(255, 41, 117, .6));
+}
+:root[data-theme="synthwave"] .ground {
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 126, 219, .45) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(0deg, rgba(255, 126, 219, .45) 0 1px, transparent 1px 7px),
+    var(--ground);
+  box-shadow: 0 -1px 12px rgba(255, 126, 219, .6);
+}
+
+/* ---------- Sakura: petals, Mt. Fuji, samurai Clawds ---------- */
+:root[data-theme="sakura"] {
+  --bg: #fdf2f4; --card: #fffafb; --ink: #3d2b33; --ink-2: #6b4f5a; --muted: #9a7d88; --line: #f3d9e1;
+  --clay: #e0709a; --clay-deep: #c24f7a; --clay-soft: #fbdbe6; --track: #f8e4ea;
+  --sky-top: #fde3ec; --sky-bottom: #fff6f0; --ground: #eedcc6; --ground-edge: #d4b996; --cloud: #ffffff;
+  --shadow: rgba(120, 40, 70, .16);
+  color-scheme: light;
+}
+:root[data-theme="sakura"] .deco { background: url("../img/sakura.svg") center bottom / cover no-repeat; opacity: .95; }
+:root[data-theme="sakura"] .ground {
+  background: repeating-linear-gradient(90deg, transparent 0 22px, rgba(110, 70, 40, .08) 22px 24px), var(--ground);
+}
+
+.petals { position: fixed; inset: 0; pointer-events: none; z-index: 30; overflow: hidden; }
+.petals i {
+  position: absolute; top: -20px; width: var(--s); height: calc(var(--s) * .72);
+  animation: petal-fall var(--d) linear var(--delay) infinite;
+}
+.petals i::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(135deg, #ffd6e4, #f49ab8);
+  border-radius: 100% 0 100% 0;
+  animation: petal-sway calc(var(--d) / 3) ease-in-out var(--delay) infinite alternate;
+}
+@keyframes petal-fall { to { transform: translateY(calc(100vh + 40px)); } }
+@keyframes petal-sway {
+  from { transform: translateX(calc(var(--sway) * -1)) rotate(calc(var(--spin) * -40deg)) rotateX(0deg); }
+  to { transform: translateX(var(--sway)) rotate(calc(var(--spin) * 220deg)) rotateX(60deg); }
+}
+
+/* katana swing + the slash streak */
+.mascot .katana { transform-box: fill-box; transform-origin: 50% 82%; }
+.mascot[data-act="slash"] .katana { animation: slash .42s cubic-bezier(.2, .8, .2, 1); }
+@keyframes slash { 0% { transform: rotate(0); } 25% { transform: rotate(-35deg); } 55% { transform: rotate(105deg); } 100% { transform: rotate(0); } }
+.swoosh {
+  position: absolute; width: 34px; height: 34px; z-index: 4; pointer-events: none;
+  border-radius: 50%; border-top: 3px solid rgba(255, 255, 255, .95); border-right: 2px solid rgba(255, 255, 255, .5);
+  filter: drop-shadow(0 0 3px var(--clay));
+  animation: swoosh .42s ease-out forwards;
+}
+@keyframes swoosh { 0% { opacity: 0; rotate: -60deg; } 30% { opacity: 1; } 100% { opacity: 0; rotate: 80deg; } }
+
+/* ---------- the "code" look for monospace themes ---------- */
+:root[data-mono] h2::before { content: "// "; color: var(--muted); font-weight: 400; }
+:root[data-mono] .brand-name::after { content: "_"; color: var(--clay); animation: cursor 1.1s steps(1) infinite; margin-left: 1px; }
+@keyframes cursor { 50% { opacity: 0; } }
+:root[data-mono] .big { font-size: 46px; letter-spacing: -0.04em; }
+:root[data-mono] .card, :root[data-mono] .stage { border-radius: 8px; }
+:root[data-mono] .ranges, :root[data-mono] .ranges button, :root[data-mono] .who { border-radius: 6px; }
+:root[data-mono] .eyebrow::before { content: "$ "; color: var(--clay); }
+.big, .multiple, .brand { text-shadow: var(--glow, none); }
+
+@media (prefers-reduced-motion: reduce) {
+  .petals { display: none; }
+  :root[data-mono] .brand-name::after { animation: none; }
+}
+:root[data-mono] .value-text, :root[data-mono] .legend li, :root[data-mono] .sub { font-size: 11.5px; }

@@ -4,11 +4,13 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const G = 1500; // gravity, px/s²
   const GROUND_H = 22;
+  const BOW_TIME = 0.9;
   const rand = (a, b) => a + Math.random() * (b - a);
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
   function createStage(stage, opts) {
     const mascots = new Map();
+    let variant = { samurai: false };
     let W = stage.clientWidth, groundY = stage.clientHeight - GROUND_H;
     let last = performance.now();
 
@@ -20,17 +22,13 @@
         this.el = document.createElement('button');
         this.el.className = 'mascot';
         this.el.type = 'button';
-        this.el.innerHTML = `<span class="tag">${esc(m.name)}</span><span class="sprite">${Sprites.svg(m.id, this.px, { tight: true })}</span>`;
+        this.el.innerHTML = `<span class="tag">${esc(m.name)}</span><span class="sprite"></span>`;
         this.sprite = this.el.querySelector('.sprite');
-        this.svg = this.el.querySelector('svg');
-        this.svg.style.transformOrigin = '50% 60%';
         this.tag = this.el.querySelector('.tag');
         this.shadow = document.createElement('div');
         this.shadow.className = 'shadow';
         stage.append(this.shadow, this.el);
-
-        this.w = +this.svg.getAttribute('width');
-        this.h = +this.svg.getAttribute('height');
+        this.paint();
         const slot = (W - this.w) / Math.max(count, 1);
         this.x = Math.min(W - this.w, Math.max(0, slot * index + slot / 2 + rand(-10, 10)));
         this.y = reduceMotion ? 0 : rand(80, 140) + index * 25; // staggered drop from the sky
@@ -44,11 +42,34 @@
         this.squash = 0;
         this.angle = 0; this.spin = 0;
         this.talkT = 0;
+        this.bowT = 0; this.slashT = 0; this.friendCd = 0;
         this.bindPointer();
         this.el.addEventListener('keydown', (e) => {
           if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.poke(); }
         });
         this.updateLabel();
+      }
+
+      // (re)draw the sprite, e.g. when the theme turns everyone into samurai
+      paint() {
+        this.sprite.innerHTML = Sprites.svg(this.id, this.px, { tight: true, samurai: variant.samurai });
+        this.svg = this.sprite.querySelector('svg');
+        this.svg.style.transformOrigin = '50% 60%';
+        this.w = +this.svg.getAttribute('width');
+        this.h = +this.svg.getAttribute('height');
+      }
+
+      slash() {
+        if (reduceMotion) return;
+        this.slashT = 0.42;
+        this.el.dataset.act = 'slash';
+        const fx = document.createElement('div');
+        fx.className = 'swoosh';
+        fx.style.left = (this.dir > 0 ? this.x + this.w - 6 : this.x - 22) + 'px';
+        fx.style.top = (groundY - this.h - this.y - 4) + 'px';
+        fx.style.transform = `scaleX(${this.dir})`;
+        stage.append(fx);
+        setTimeout(() => fx.remove(), 450);
       }
 
       get grounded() { return this.y <= 0 && this.vy === 0 && this.mode !== 'held'; }
@@ -68,7 +89,12 @@
         this.el.classList.add('talking');
         this.updateLabel();
         this.setFace('happy', 1.2);
-        if (this.canJump) this.jump(rand(480, 560), 0, Math.random() < 0.5);
+        if (variant.samurai) {
+          this.slash();
+          if (this.canJump) this.jump(rand(300, 380));
+        } else if (this.canJump) {
+          this.jump(rand(480, 560), 0, Math.random() < 0.5);
+        }
       }
 
       updateLabel() {
@@ -125,6 +151,7 @@
       think() {
         if (reduceMotion) { this.mode = 'idle'; this.timer = 9999; return; }
         const r = Math.random();
+        if (variant.samurai && r < 0.12) { this.mode = 'idle'; this.timer = rand(0.8, 1.6); this.slash(); return; }
         if (r < 0.38) { this.mode = 'walk'; this.dir = Math.random() < 0.5 ? -1 : 1; this.speed = rand(28, 52); this.timer = rand(1.5, 4); }
         else if (r < 0.62) { this.mode = 'idle'; this.timer = rand(0.8, 2.8); }
         else if (r < 0.86) { this.jump(rand(280, 400), this.dir * rand(20, 70)); }
@@ -141,6 +168,9 @@
           if (this.talkT <= 0) { this.el.classList.remove('talking'); this.updateLabel(); }
         }
         if (this.squash > 0) this.squash = Math.max(0, this.squash - dt);
+        if (this.bowT > 0) this.bowT = Math.max(0, this.bowT - dt);
+        if (this.friendCd > 0) this.friendCd -= dt;
+        if (this.slashT > 0) { this.slashT -= dt; if (this.slashT <= 0) delete this.el.dataset.act; }
 
         const maxY = groundY - this.h;
         if (this.mode === 'held') {
@@ -188,7 +218,9 @@
         let sx = 1, sy = 1;
         if (this.squash > 0) { const k = this.squash / 0.18; sx = 1 + 0.16 * k; sy = 1 - 0.2 * k; }
         else if (this.mode === 'air' && this.vy > 150) { sx = 0.94; sy = 1.07; }
-        this.sprite.style.transform = `scale(${sx}, ${sy})`;
+        // a polite bow: lean toward whoever you're facing, then straighten up
+        const bow = this.bowT > 0 ? this.dir * 26 * Math.sin(Math.PI * (1 - this.bowT / BOW_TIME)) : 0;
+        this.sprite.style.transform = `scale(${sx}, ${sy}) rotate(${bow}deg)`;
         const tilt = this.mode === 'held' ? Math.max(-14, Math.min(14, this.vx * 0.02)) : 0;
         this.svg.style.transform = `rotate(${this.angle + tilt}deg) scaleX(${this.dir})`;
         this.el.dataset.legs = this.legs;
@@ -211,8 +243,19 @@
           const a = list[i], b = list[j];
           if (a.mode !== 'walk' && b.mode !== 'walk') continue;
           if (a.y !== 0 || b.y !== 0) continue;
+          if (a.friendCd > 0 || b.friendCd > 0) continue;
           const gap = Math.abs((a.x + a.w / 2) - (b.x + b.w / 2));
           if (gap < (a.w + b.w) * 0.42 && Math.random() < 1.2 * dt) {
+            a.friendCd = b.friendCd = rand(3, 6);
+            if (variant.samurai) {
+              // samurai bow to each other, then go their separate ways
+              const face = a.x < b.x ? 1 : -1;
+              for (const [m, d] of [[a, face], [b, -face]]) {
+                m.dir = d; m.mode = 'idle'; m.timer = BOW_TIME + rand(0.2, 0.6);
+                m.bowT = BOW_TIME; m.setFace('blink', BOW_TIME * 0.6);
+              }
+              continue;
+            }
             const dir = a.x < b.x ? -1 : 1;
             a.dir = dir; b.dir = -dir;
             a.jump(rand(300, 360), dir * 40); b.jump(rand(300, 360), -dir * 40);
@@ -266,6 +309,11 @@
         setTimeout(() => coin.remove(), 1700);
       },
       poke(id) { const m = mascots.get(id); if (m) m.poke(); },
+      setVariant(v) {
+        if (!!v.samurai === variant.samurai) return;
+        variant = { samurai: !!v.samurai };
+        for (const m of mascots.values()) m.paint();
+      },
       relabel() { for (const m of mascots.values()) m.updateLabel(); },
     };
   }

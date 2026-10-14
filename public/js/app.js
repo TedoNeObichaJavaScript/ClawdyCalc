@@ -20,6 +20,7 @@
   let data = null;
   let range = store.get('cc.range', '7d');
   let includeEst = store.get('cc.est', '0') === '1';
+  let theme = Themes.get(store.get('cc.theme', 'claude'));
   let lastFetch = 0;
   let prevModelCost = null;
 
@@ -385,7 +386,7 @@
       const pct = total.cost ? (m.cost / total.cost) * 100 : 0;
       return `
       <li data-model="${esc(m.key)}" title="Make ${esc(modelName(m.key))} jump">
-        <span class="mini">${Sprites.svg(m.key, Sprites.look(m.key).scale < 1 ? 1.25 : 1.5, { tight: true })}</span>
+        <span class="mini">${Sprites.svg(m.key, Sprites.look(m.key).scale < 1 ? 1.25 : 1.5, { tight: true, samurai: theme.samurai })}</span>
         <div>
           <div class="mname">${esc(modelName(m.key))}${recoveredOnly ? ' <span class="pill">recovered</span>' : ''}</div>
           <div class="mmeta">${tokens(m.tokens)} tok${m.n ? ' · ' + plural(m.n, 'msg') : ''} · ${Math.round(pct)}%</div>
@@ -487,6 +488,59 @@
       const cost = data.rows.filter((r) => r.model === id && inRange(r.day, range)).reduce((s, r) => s + r.cost, 0);
       return `${modelName(id)}: ${money(cost)} ${RANGE_LABEL[range]}. Press Enter to make it jump.`;
     },
+  });
+
+  // ---------- themes ----------
+  function setTheme(id) {
+    theme = Themes.apply(id, (t) => {
+      stage.setVariant({ samurai: t.samurai });
+      if (data) render();
+    });
+    store.set('cc.theme', theme.id);
+    const pop = $('themePop');
+    if (!pop.hidden) Themes.buildPicker(pop, theme.id, setTheme);
+  }
+
+  function toggleThemePicker(open) {
+    const pop = $('themePop');
+    open = open ?? pop.hidden;
+    pop.hidden = !open;
+    $('themeBtn').setAttribute('aria-expanded', String(open));
+    if (open) {
+      Themes.buildPicker(pop, theme.id, setTheme);
+      const current = pop.querySelector('[aria-checked="true"]');
+      if (current) current.focus();
+    }
+  }
+
+  function cycleTheme(step) {
+    const list = Themes.list;
+    const i = list.findIndex((t) => t.id === theme.id);
+    setTheme(list[(i + step + list.length) % list.length].id);
+  }
+
+  setTheme(theme.id);
+
+  $('themeBtn').addEventListener('click', () => toggleThemePicker());
+  document.addEventListener('click', (e) => {
+    if (!$('themePop').hidden && !e.target.closest('.top-right')) toggleThemePicker(false);
+  });
+
+  // keyboard: T / Shift+T cycles themes, 1–5 picks a range, Esc closes the picker
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.target.closest('input, select, textarea')) return;
+    if (e.key === 'Escape' && !$('themePop').hidden) { toggleThemePicker(false); $('themeBtn').focus(); return; }
+    if (e.key === 't' || e.key === 'T') { cycleTheme(e.shiftKey ? -1 : 1); return; }
+    const ranges = ['today', '7d', '30d', 'month', 'all'];
+    const n = Number(e.key);
+    if (n >= 1 && n <= 5) { range = ranges[n - 1]; store.set('cc.range', range); render(); }
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && !$('themePop').hidden) {
+      e.preventDefault();
+      const items = [...$('themePop').querySelectorAll('button')];
+      const i = items.indexOf(document.activeElement);
+      items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length].focus();
+    }
   });
 
   // ---------- events ----------

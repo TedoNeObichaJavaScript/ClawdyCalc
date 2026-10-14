@@ -8,24 +8,42 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Silkscreen&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <meta name="theme-color" content="#F3F0E8">
+  <script>
+    // apply the saved theme before first paint so there is no flash
+    try {
+      const t = localStorage.getItem('cc.theme');
+      if (t) document.documentElement.dataset.theme = t;
+      if (['terminal', 'dracula', 'tokyo', 'catppuccin', 'gruvbox', 'nord', 'synthwave'].includes(t)) document.documentElement.dataset.mono = '';
+    } catch {}
+  </script>
 </head>
 <body>
   <main class="tab">
     <header class="top">
       <div class="brand">
         <svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l1.6 6.2 5.6-3.3-3.3 5.6 6.2 1.6-6.2 1.6 3.3 5.6-5.6-3.3L12 21.5l-1.6-6.2-5.6 3.3 3.3-5.6L1.9 11.4l6.2-1.6-3.3-5.6 5.6 3.3z"/></svg>
-        <span>ClawdyCalc</span>
+        <span class="brand-name">ClawdyCalc</span>
         <span class="demo-badge" id="demoBadge" hidden>demo</span>
       </div>
-      <div class="who" id="who">
-        <span class="live" id="live" aria-hidden="true"></span>
-        <span id="whoText">Connecting…</span>
+      <div class="top-right">
+        <button class="icon-btn" id="themeBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="themePop" title="Theme (T)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18c1.1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4c0-4.4-4-8-9-8Z" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="7.5" cy="11" r="1.4"/><circle cx="10.5" cy="7.5" r="1.4"/><circle cx="15" cy="7.8" r="1.4"/></svg>
+          <span class="sr-only">Theme</span>
+        </button>
+        <div class="who" id="who">
+          <span class="live" id="live" aria-hidden="true"></span>
+          <span id="whoText">Connecting…</span>
+        </div>
+        <div class="theme-pop" id="themePop" role="menu" aria-label="Themes" hidden></div>
       </div>
     </header>
 
     <section class="stage" id="stage" aria-label="Your Claude models, playing. Click one to see what it cost, or drag and throw it.">
+      <div class="deco" aria-hidden="true"></div>
       <div class="cloud c1" aria-hidden="true"></div>
       <div class="cloud c2" aria-hidden="true"></div>
       <div class="ground" aria-hidden="true"></div>
@@ -136,6 +154,7 @@
 
     <footer class="foot">
       <span id="footText">Reading ~/.claude/projects</span>
+      <span class="keys"><kbd>T</kbd> theme <kbd>1</kbd>–<kbd>5</kbd> range</span>
       <button class="link" id="exportCsv" type="button">Export CSV</button>
     </footer>
     <p class="fine center">Estimates at API list prices, not a bill. Unofficial, not made by Anthropic.</p>
@@ -145,6 +164,7 @@
 
   <script src="js/sprites.js"></script>
   <script src="js/stage.js"></script>
+  <script src="js/themes.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

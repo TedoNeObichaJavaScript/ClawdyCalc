@@ -36,6 +36,7 @@ ClawdyCalc reads those logs, prices every message, and shows you:
 - **Your most expensive projects**, so you know who to blame
 - **Fun stats**, like your priciest day and how much prompt caching saved you (spoiler: a lot)
 - **CSV export**, for spreadsheet people
+- **Themes for people who live in their editor**: Terminal, Dracula, Tokyo Night, Catppuccin, Gruvbox, Nord, Synthwave, and a Sakura one where everyone turns samurai
 
 And the important part: **every model you've used shows up as a little Clawd.** They walk around, hop, do backflips, and high-five when they bump into each other. Click one to see what it cost you. Grab one and throw it across the screen. When you spend new tokens, that model jumps and drops a coin.
 
@@ -53,6 +54,39 @@ And the important part: **every model you've used shows up as a little Clawd.** 
 | <img src="docs/clawds/mystery.svg" width="56"> | **Anything new** | party hat | welcome to the party |
 
 The more you spend on a model, the bigger its Clawd gets. Chonk reflects spend.
+
+| <img src="docs/clawds/samurai.svg" width="64"> | In the **Sakura** theme, every Clawd trades its hat for a kabuto in its model's color and picks up a katana. Samurai don't high-five. They bow to each other, and every now and then they slash at nothing in particular. Click one and it'll show you. |
+|:-:|---|
+
+## Themes
+
+Click the palette in the top right, or just press <kbd>T</kbd> to flip through them. The code-editor themes switch everything to JetBrains Mono, because of course they do.
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/themes/claude.png" alt="Claude theme"><br><sub><b>Claude</b> · follows your system</sub></td>
+    <td align="center"><img src="docs/themes/terminal.png" alt="Terminal theme"><br><sub><b>Terminal</b> · green phosphor CRT</sub></td>
+    <td align="center"><img src="docs/themes/sakura.png" alt="Sakura theme"><br><sub><b>Sakura</b> · petals and samurai</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/themes/synthwave.png" alt="Synthwave theme"><br><sub><b>Synthwave</b> · '84 neon sunset</sub></td>
+    <td align="center"><img src="docs/themes/dracula.png" alt="Dracula theme"><br><sub><b>Dracula</b></sub></td>
+    <td align="center"><img src="docs/themes/tokyo.png" alt="Tokyo Night theme"><br><sub><b>Tokyo Night</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/themes/catppuccin.png" alt="Catppuccin theme"><br><sub><b>Catppuccin</b> · mocha</sub></td>
+    <td align="center"><img src="docs/themes/gruvbox.png" alt="Gruvbox theme"><br><sub><b>Gruvbox</b></sub></td>
+    <td align="center"><img src="docs/themes/nord.png" alt="Nord theme"><br><sub><b>Nord</b></sub></td>
+  </tr>
+</table>
+
+| Key | Does |
+|---|---|
+| <kbd>T</kbd> / <kbd>Shift</kbd>+<kbd>T</kbd> | next / previous theme |
+| <kbd>1</kbd> to <kbd>5</kbd> | Today, 7D, 30D, Month, All |
+| <kbd>Esc</kbd> | close the theme picker |
+
+Want your favorite editor theme in here? A theme is about 15 CSS variables in [`public/css/themes.css`](public/css/themes.css) plus one line in [`public/js/themes.js`](public/js/themes.js). PRs welcome.
 
 ## Get it running
 
@@ -139,15 +173,19 @@ ClawdyCalc/
 │   ├── pricing.js           the price list
 │   └── demo.js              fake data for ?demo
 ├── public/                  the page (plain HTML/CSS/JS, no build step)
-│   └── js/                  app.js, stage.js (the playground), sprites.js (the Clawds)
+│   ├── css/                 style.css + themes.css
+│   ├── img/                 theme backdrops (Mt. Fuji lives here)
+│   └── js/                  app.js, stage.js (the playground), sprites.js (the Clawds),
+│                            themes.js (theme picker, petals, samurai mode)
 ├── scripts/build-readme-art.js   generates the SVGs in this README
-└── docs/                    README images
+└── docs/                    README images and theme previews
 ```
 
 ## Contributing
 
 PRs are very welcome. Some ideas if you're looking for one:
 
+- More themes! Solarized, One Dark, Rosé Pine, your call.
 - More hats! Every model deserves a look. Hats live in `public/js/sprites.js` as tiny pixel grids.
 - A tray or menu-bar version
 - Testing on macOS and Linux (I built it on Windows)
