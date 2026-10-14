@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClawdyCalc</title>
+  <meta name="description" content="Your Claude Code usage, priced at API rates.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="tab">
+    <header class="top">
+      <div class="brand">
+        <svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l1.6 6.2 5.6-3.3-3.3 5.6 6.2 1.6-6.2 1.6 3.3 5.6-5.6-3.3L12 21.5l-1.6-6.2-5.6 3.3 3.3-5.6L1.9 11.4l6.2-1.6-3.3-5.6 5.6 3.3z"/></svg>
+        <span>ClawdyCalc</span>
+        <span class="demo-badge" id="demoBadge" hidden>demo</span>
+      </div>
+      <div class="who" id="who">
+        <span class="live" id="live" aria-hidden="true"></span>
+        <span id="whoText">Connecting…</span>
+      </div>
+    </header>
+
+    <section class="stage" id="stage" aria-label="Your Claude models, playing. Click one to see what it cost, or drag and throw it.">
+      <div class="cloud c1" aria-hidden="true"></div>
+      <div class="cloud c2" aria-hidden="true"></div>
+      <div class="ground" aria-hidden="true"></div>
+    </section>
+
+    <section class="card warn" id="retention" hidden>
+      <div>
+        <h2>Claude Code deletes your logs after <span id="retentionDays">30</span> days</h2>
+        <p>ClawdyCalc saves a copy of everything it sees while it's running. To make sure nothing slips through, turn the cleanup off.</p>
+      </div>
+      <button class="btn" id="keepLogs" type="button">Keep logs forever</button>
+    </section>
+
+    <section class="hero">
+      <div class="ranges" role="tablist" aria-label="Time range" id="ranges">
+        <button role="tab" data-range="today">Today</button>
+        <button role="tab" data-range="7d">7D</button>
+        <button role="tab" data-range="30d">30D</button>
+        <button role="tab" data-range="month">Month</button>
+        <button role="tab" data-range="all">All</button>
+      </div>
+      <p class="eyebrow">Spent in tokens at API prices</p>
+      <p class="big" id="big">$0.00</p>
+      <p class="sub" id="sub">&nbsp;</p>
+    </section>
+
+    <section class="card value">
+      <div class="row-head">
+        <h2 id="valueTitle">This month vs your plan</h2>
+        <select id="planSelect" aria-label="Your plan">
+          <option value="auto">Auto</option>
+          <option value="pro">Pro · $20</option>
+          <option value="max5">Max 5x · $100</option>
+          <option value="max20">Max 20x · $200</option>
+          <option value="api">API (pay as you go)</option>
+        </select>
+      </div>
+      <div class="value-line">
+        <span class="multiple" id="multiple">—</span>
+        <span class="value-text" id="valueText"></span>
+      </div>
+      <div class="meter" id="meter" aria-hidden="true"><div class="meter-fill" id="meterFill"></div></div>
+    </section>
+
+    <section class="card lifetime" id="lifetime">
+      <div class="row-head">
+        <h2>Lifetime</h2>
+        <span class="muted small" id="lifeSince"></span>
+      </div>
+      <div class="value-line">
+        <span class="multiple" id="lifeTotal">—</span>
+        <span class="value-text" id="lifeText"></span>
+      </div>
+      <div class="coverage" id="coverage" aria-hidden="true"></div>
+      <div class="cov-labels"><span id="covStart"></span><span>today</span></div>
+      <ul class="legend" id="lifeLegend"></ul>
+      <p class="paid" id="lifePaid" hidden></p>
+      <label class="switch">
+        <input type="checkbox" id="includeEstimate">
+        <span>Fill the gaps with an estimate</span>
+      </label>
+      <p class="fine" id="lifeNote"></p>
+    </section>
+
+    <section class="card block">
+      <div class="row-head">
+        <h2>Last 5 hours</h2>
+        <span class="muted small" id="blockSince"></span>
+      </div>
+      <div class="stats3">
+        <div><span class="k">Spent</span><span class="v" id="blockCost">—</span></div>
+        <div><span class="k">Tokens</span><span class="v" id="blockTokens">—</span></div>
+        <div><span class="k">Per hour</span><span class="v" id="blockRate">—</span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="row-head">
+        <h2 id="chartTitle">Daily spend</h2>
+        <span class="muted small" id="chartRange">last 30 days</span>
+      </div>
+      <div class="chart" id="chart"></div>
+      <div class="chart-legend" id="chartLegend" hidden>
+        <span><i class="sw solid"></i>tracked</span>
+        <span><i class="sw dashed"></i>estimated</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="row-head"><h2>Highlights</h2><span class="muted small" id="hlRange"></span></div>
+      <div class="stats2" id="highlights"></div>
+    </section>
+
+    <section class="card">
+      <div class="row-head"><h2>By model</h2><span class="muted small" id="modelsRange"></span></div>
+      <ul class="models" id="models"></ul>
+    </section>
+
+    <section class="card">
+      <div class="row-head"><h2>Where it goes</h2><span class="muted small">tokens · cost</span></div>
+      <ul class="kinds" id="kinds"></ul>
+    </section>
+
+    <section class="card">
+      <div class="row-head"><h2>Top projects</h2></div>
+      <ul class="projects" id="projects"></ul>
+    </section>
+
+    <footer class="foot">
+      <span id="footText">Reading ~/.claude/projects</span>
+      <button class="link" id="exportCsv" type="button">Export CSV</button>
+    </footer>
+    <p class="fine center">Estimates at API list prices, not a bill. Unofficial, not made by Anthropic.</p>
+  </main>
+
+  <div class="tooltip" id="tooltip" role="status" hidden></div>
+
+  <script src="js/sprites.js"></script>
+  <script src="js/stage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

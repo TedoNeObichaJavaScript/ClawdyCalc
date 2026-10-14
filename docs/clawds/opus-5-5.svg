@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="84" height="66" viewBox="0 0 84 66">
+<style>
+  .legs-b, .eyes-shut, .eyes-happy { opacity: 0; }
+  .legs-a { animation: legsA .36s steps(1) infinite; }
+  .legs-b { animation: legsB .36s steps(1) infinite; }
+  .eyes-open { animation: eyesOpen 4.2s steps(1) infinite; }
+  .eyes-shut { animation: eyesShut 4.2s steps(1) infinite; }
+  @keyframes legsA { 0% { opacity: 1; } 50% { opacity: 0; } }
+  @keyframes legsB { 0% { opacity: 0; } 50% { opacity: 1; } }
+  @keyframes eyesOpen { 0%, 94% { opacity: 1; } 95%, 98% { opacity: 0; } 99% { opacity: 1; } }
+  @keyframes eyesShut { 0%, 94% { opacity: 0; } 95%, 98% { opacity: 1; } 99% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  .bob { animation: bob 1.8s ease-in-out infinite; }
+  @keyframes bob { 0%, 60%, 100% { transform: translateY(0); } 75% { transform: translateY(-6px); } }
+</style>
+<g class="bob"><g transform="translate(10 10)"><svg width="64" height="52" viewBox="0 -3 16 13" shape-rendering="crispEdges"><g class="legs-a"><rect x="3" y="8" width="1" height="2" fill="#D97757"/><rect x="5" y="8" width="1" height="2" fill="#D97757"/><rect x="10" y="8" width="1" height="2" fill="#D97757"/><rect x="12" y="8" width="1" height="2" fill="#D97757"/></g><g class="legs-b"><rect x="3" y="8" width="1" height="1" fill="#D97757"/><rect x="5" y="8" width="1" height="1" fill="#D97757"/><rect x="10" y="8" width="1" height="1" fill="#D97757"/><rect x="12" y="8" width="1" height="1" fill="#D97757"/><rect x="2" y="9" width="1" height="1" fill="#D97757"/><rect x="6" y="9" width="1" height="1" fill="#D97757"/><rect x="9" y="9" width="1" height="1" fill="#D97757"/><rect x="13" y="9" width="1" height="1" fill="#D97757"/></g><rect x="2" y="0" width="12" height="8" fill="#D97757"/><rect x="0" y="4" width="16" height="2" fill="#D97757"/><g class="eyes-open"><rect x="4" y="2" width="1" height="2" fill="#1F1E1C"/><rect x="11" y="2" width="1" height="2" fill="#1F1E1C"/></g><g class="eyes-shut"><rect x="3" y="3" width="2" height="1" fill="#1F1E1C"/><rect x="11" y="3" width="2" height="1" fill="#1F1E1C"/></g><g class="eyes-happy"><rect x="3" y="3" width="1" height="1" fill="#1F1E1C"/><rect x="4" y="2" width="1" height="1" fill="#1F1E1C"/><rect x="5" y="3" width="1" height="1" fill="#1F1E1C"/><rect x="10" y="3" width="1" height="1" fill="#1F1E1C"/><rect x="11" y="2" width="1" height="1" fill="#1F1E1C"/><rect x="12" y="3" width="1" height="1" fill="#1F1E1C"/></g><rect x="3" y="-3" width="1" height="1" fill="#E8B94A"/><rect x="7" y="-3" width="2" height="1" fill="#E8B94A"/><rect x="12" y="-3" width="1" height="1" fill="#E8B94A"/><rect x="3" y="-2" width="2" height="1" fill="#E8B94A"/><rect x="6" y="-2" width="4" height="1" fill="#E8B94A"/><rect x="11" y="-2" width="2" height="1" fill="#E8B94A"/><rect x="3" y="-1" width="4" height="1" fill="#E8B94A"/><rect x="7" y="-1" width="2" height="1" fill="#C2413A"/><rect x="9" y="-1" width="4" height="1" fill="#E8B94A"/></svg></g></g>
+</svg>
