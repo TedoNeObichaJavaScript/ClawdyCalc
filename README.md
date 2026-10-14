@@ -28,16 +28,16 @@ But *how* great? Claude Code quietly writes down every token you burn, so I want
 
 ClawdyCalc reads those logs, prices every message, and shows you:
 
-- 💸 **What you've spent** today, this week, this month and all time, at API list prices
-- 📈 **How much value you get from your plan.** "You paid $100 and got $412 worth of tokens" hits different
-- ⏱️ **Your last 5 hours**, which is the window your usage limits are counted in, plus your burn rate per hour
-- 🕰️ **Lifetime spend, including history Claude Code already deleted** (more on that [below](#wait-where-did-my-old-usage-go))
-- 🧠 **Which models ate your budget**, and whether it went to output, cache writes or cache reads
-- 📁 **Your most expensive projects**, so you know who to blame
-- ✨ **Fun stats**, like your priciest day and how much prompt caching saved you (spoiler: a lot)
-- 📄 **CSV export**, for spreadsheet people
+- **What you've spent** today, this week, this month and all time, at API list prices
+- **How much value you get from your plan.** "You paid $100 and got $412 worth of tokens" hits different
+- **Your last 5 hours**, which is the window your usage limits are counted in, plus your burn rate per hour
+- **Lifetime spend, including history Claude Code already deleted** (more on that [below](#wait-where-did-my-old-usage-go))
+- **Which models ate your budget**, and whether it went to output, cache writes or cache reads
+- **Your most expensive projects**, so you know who to blame
+- **Fun stats**, like your priciest day and how much prompt caching saved you (spoiler: a lot)
+- **CSV export**, for spreadsheet people
 
-And the important part: **every model you've used shows up as a little Clawd.** They walk around, hop, do backflips, and high-five when they bump into each other. Click one to see what it cost you. Grab one and throw it across the screen. When you spend new tokens, that model jumps and drops a coin. 🪙
+And the important part: **every model you've used shows up as a little Clawd.** They walk around, hop, do backflips, and high-five when they bump into each other. Click one to see what it cost you. Grab one and throw it across the screen. When you spend new tokens, that model jumps and drops a coin.
 
 ## Meet the cast
 
@@ -93,7 +93,7 @@ I found out the hard way. My first version said I'd spent about $400 total. I kn
 So ClawdyCalc goes digging:
 
 1. **Session logs** (`~/.claude/projects`). Exact, message by message, but only the last 30 days.
-2. **The `/stats` cache** (`~/.claude/stats-cache.json`). If you ever ran `/stats`, Claude Code saved exact per-model token totals for that window. Old data, recovered. 🎉
+2. **The `/stats` cache** (`~/.claude/stats-cache.json`). If you ever ran `/stats`, Claude Code saved exact per-model token totals for that window. Old data, recovered.
 3. **Last-session totals** (`~/.claude.json`). Claude Code remembers the token usage of the last session in every project, even after the log is gone.
 4. **Its own archive** (`~/.clawdycalc`). While ClawdyCalc is running, it copies every message it sees, so once it's tracked something, the data can't disappear on you.
 
@@ -148,10 +148,10 @@ ClawdyCalc/
 
 PRs are very welcome. Some ideas if you're looking for one:
 
-- 🎩 More hats! Every model deserves a look. Hats live in `public/js/sprites.js` as tiny pixel grids.
-- 🖥️ A tray or menu-bar version
-- 🐧 Testing on macOS and Linux (I built it on Windows)
-- 📊 More charts, like spend by hour of day
+- More hats! Every model deserves a look. Hats live in `public/js/sprites.js` as tiny pixel grids.
+- A tray or menu-bar version
+- Testing on macOS and Linux (I built it on Windows)
+- More charts, like spend by hour of day
 
 When a new model comes out, add it to `src/pricing.js` and give it a hat. If you change the sprites, run `npm run art` to regenerate the README art.
 
